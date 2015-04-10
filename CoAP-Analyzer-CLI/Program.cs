@@ -1,19 +1,6 @@
 ﻿using System;
 using System.Data;
-using System.Text;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Net;
-using System.Diagnostics;
 using System.Collections.Generic;
-using CoAP.Server;
-using CoAP;
-using CoAP.Net;
-using CoAP.Stack;
-using CoAP.Util;
 using System.Threading;
 using System.Linq;
 using ExcelLibrary;
@@ -85,77 +72,5 @@ namespace CoAP_Analyzer_CLI
             }
             ExcelLibrary.DataSetHelper.CreateWorkbook(filename, ds);
         }
-    }
-
-    [DataContract]
-    class Temp
-    {
-        [DataMember]
-        public double temp { get; set; }
-        [DataMember]
-        public string unit { get; set; }
-
-        public Temp(double val, string u)
-        {
-            temp = val;
-            unit = u;
-        }
-    }
-
-    [DataContract]
-    class Humididy
-    {
-        [DataMember]
-        public double humidity;
-        [DataMember]
-        public string unit; 
-        public Humididy(double val, string u)
-        {
-            humidity = val;
-            unit = u;
-        }
-    }
-
-    [DataContract]
-    class Light
-    {
-        [DataMember]
-        public double light;
-        [DataMember]
-        public string unit; 
-        public Light(double val, string u)
-        {
-            light = val;
-            unit = u;
-        }
-    }
-
-    [DataContract]
-    class Vcc3
-    {
-        [DataMember]
-        public double voltage;
-        [DataMember]
-        public string unit;
-        public Vcc3(double val, string u)
-        {
-            voltage = val;
-            unit = u;
-        }
-
-    }
-
-    class Measure
-    {
-        public double value;
-        public string unit;
-        public DateTime time;
-
-        public Measure(double v, string u,  DateTime t)
-        {
-            unit = u;
-            value = v;
-            time = t;
-        }
-    }
+    }  
 }

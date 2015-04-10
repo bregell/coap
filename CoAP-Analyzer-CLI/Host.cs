@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data;
 using System.IO;
 using System.Runtime.Serialization.Json;
-using System.ComponentModel;
-using System.Threading.Tasks;
 using System.Net;
 using System.Diagnostics;
-using CoAP.Server;
 using CoAP;
 using CoAP.Net;
-using CoAP.Stack;
-using CoAP.Util;
-using System.Threading;
-using ExcelLibrary;
 
 namespace CoAP_Analyzer_CLI
 {
