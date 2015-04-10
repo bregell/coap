@@ -1,30 +1,45 @@
 ﻿using System;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace CoAP_Analyzer_CLI
 {
-    public class Worker
+    public static class RND
     {
-        private volatile bool _shouldStop = false;
-        public Host h;
-        public int rate;
-        public volatile bool _done = false;
-        public Action<int> methodToRun;
+        static public Random r = new Random();
+    }
+    class Worker
+    {
+        
+        private bool _shouldStop;
+        public Host h { get; private set; }
+        public int rate { get; private set; }
+        private int parameter { get; set; }
+        public bool _done { get; private set; }
+        public Func<int, Measure> methodToRun { get; private set; }
+        public List<Measure> measure { get; private set; }
+
+        public Worker(Host host, Func<int, Measure> f, int r, int param)
+        {
+            h = host;
+            _done = false;
+            _shouldStop = false;
+            rate = r;
+            parameter = param;
+            methodToRun = f;
+            measure = new List<Measure>();
+        }
 
         public void Work()
         {
+           
+            Thread.Sleep((int)(RND.r.NextDouble() * rate));
             while (!_shouldStop)
             {
-                long now = DateTime.Now.ToBinary();
-                methodToRun(rate);
-                if (DateTime.Now.ToBinary() < (now + rate))
-                {
-                    Thread.Sleep(System.TimeSpan.FromMilliseconds(DateTime.Now.ToBinary() - (now + rate)));
-                }
-                
+                measure.Add(methodToRun(parameter));
+                Thread.Sleep(rate);
             }
             _done = true;
-            methodToRun.Method.Name.
         }
         public void Stop()
         {

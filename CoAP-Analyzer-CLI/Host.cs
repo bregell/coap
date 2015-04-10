@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
-using System.Text;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.ComponentModel;
@@ -20,62 +19,27 @@ using ExcelLibrary;
 
 namespace CoAP_Analyzer_CLI
 {
-    public class Host
+    class Host
     {
-        public IPAddress ip;
-        public List<Measure> ping;
-        public List<Measure> troughput;
-        public List<Measure> temp;
-        public List<Measure> humidity;
-        public List<Measure> light;
-        public List<Measure> vcc3;
+        public IPAddress ip { get; private set; }
 
         private CoapConfig _conf;
         private IEndPoint _endpoint;
 
-        public int hops;
-
         public Host(string ip)
         {
             this.ip = IPAddress.Parse(ip);
-            hops = 0;
 
             _conf = new CoapConfig();
-            _conf.DefaultBlockSize = 32;
-            _conf.MaxMessageSize = 32;
+            _conf.DefaultBlockSize = 64;
+            _conf.MaxMessageSize = 64;
             _endpoint = new CoAPEndPoint(_conf);
             _endpoint.Start();
-
-            ping = new List<Measure>();
-            troughput = new List<Measure>();
-            light = new List<Measure>();
-            temp = new List<Measure>();
-            humidity = new List<Measure>();
-            vcc3 = new List<Measure>();
-
         }
 
-        public List<List<Measure>> getMeasures()
+        public Measure Temp(int timeout)
         {
-            return new List<List<Measure>> { vcc3, ping, troughput, temp, light, humidity };
-        }
-
-        public DataTable fillDataTable(DataTable dt, List<Measure> lm)
-        {
-            foreach (Measure m in lm)
-            {
-                DataRow r = dt.NewRow();
-                r["Ip"] = ip.ToString();
-                r[dt.Columns[1]] = dt.Columns[1];
-                r["Time"] = m.time;
-                dt.Rows.Add(r);
-            }
-            return dt;
-        }
-
-        public void Temp(int timeout)
-        {
-            timeout = (timeout == null) ? System.Threading.Timeout.Infinite : timeout;
+            timeout = (timeout == 0) ? System.Threading.Timeout.Infinite : timeout;
             //Prepare the package
             Request req = new Request(Method.GET);
             req.Accept = MediaType.ApplicationJson;
@@ -84,61 +48,51 @@ namespace CoAP_Analyzer_CLI
 
             //Send Package
             req.Send(_endpoint);
-            req.WaitForResponse(timeout);
-            if (req.Response != null)
+            req.Response = req.WaitForResponse(10000);
+            if (req.Response != null && req.Response.PayloadSize != 0)
             {
-                if (req.Response.PayloadSize != 0)
-                {
-                    DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Temp));
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Temp));
+                try {
                     MemoryStream stream1 = new MemoryStream(req.Response.Payload);
                     Temp t = (Temp)ser.ReadObject(stream1);
-                    temp.Add(new Measure(t.temp, DateTime.Now));
+                    return new Measure(t.temp, t.unit, DateTime.Now);
                 }
-                else
+                catch (Exception)
                 {
-                    temp.Add(new Measure(-1, DateTime.Now));
+                    return new Measure(-1, "Serialization Error", DateTime.Now);
                 }
             }
-            else
-            {
-                temp.Add(new Measure(-1, DateTime.Now));
-            }
+                return new Measure(-1, "Timeout", DateTime.Now);
         }
 
-        public void Light()
+        public Measure Light(int timeout)
         {
             //Prepare the package
-            Request req = new Request(Method.PUT);
+            Request req = new Request(Method.GET);
             req.Accept = MediaType.ApplicationJson;
             Uri uri = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort, "sensors/light").Uri;
             req.URI = uri;
 
             //Send Package
             req.Send(_endpoint);
-            req.Respond += delegate(object sender, ResponseEventArgs e)
+            req.Response = req.WaitForResponse(10000);
+            if (req.Response != null && req.Response.PayloadSize != 0)
             {
-                if (e.Response != null)
-                {
-                    if (e.Response.PayloadSize != 0)
-                    {
-                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Light));
-                        MemoryStream stream1 = new MemoryStream(e.Response.Payload);
-                        Light l = (Light)ser.ReadObject(stream1);
-                        light.Add(new Measure(l.light, DateTime.Now));
-                    }
-                    else
-                    {
-                        light.Add(new Measure(-1, DateTime.Now));
-                    }
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Light));
+                try {    
+                    MemoryStream stream1 = new MemoryStream(req.Response.Payload);
+                    Light l = (Light)ser.ReadObject(stream1);
+                    return new Measure(l.light, l.unit, DateTime.Now);
                 }
-                else
+                catch (Exception)
                 {
-                    light.Add(new Measure(-1, DateTime.Now));
+                    return new Measure(-1, "Serialization Error", DateTime.Now);
                 }
-            };
+            }
+            return new Measure(-1, "Timeout", DateTime.Now);
         }
 
-        public void Humidity()
+        public Measure Humidity(int timeout)
         {
             //Prepare the package
             Request req = new Request(Method.GET);
@@ -148,88 +102,52 @@ namespace CoAP_Analyzer_CLI
 
             //Send Package
             req.Send(_endpoint);
-            req.Respond += delegate(object sender, ResponseEventArgs e)
+            req.Response = req.WaitForResponse(10000);
+            if (req.Response != null && req.Response.PayloadSize != 0)
             {
-                if (e.Response != null)
-                {
-                    if (e.Response.PayloadSize != 0)
-                    {
-                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Humididy));
-                        MemoryStream stream1 = new MemoryStream(e.Response.Payload);
-                        Humididy h = (Humididy)ser.ReadObject(stream1);
-                        humidity.Add(new Measure(h.humidity, DateTime.Now));
-                    }
-                    else
-                    {
-                        humidity.Add(new Measure(-1, DateTime.Now));
-                    }
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Humididy));
+                try {
+                    MemoryStream stream1 = new MemoryStream(req.Response.Payload);
+                    Humididy h = (Humididy)ser.ReadObject(stream1);
+                    return new Measure(h.humidity, h.unit, DateTime.Now);
                 }
-                else
+                catch (Exception)
                 {
-                    humidity.Add(new Measure(-1, DateTime.Now));
+                    return new Measure(-1, "Serialization Error", DateTime.Now);
                 }
-            };
+            }
+            return new Measure(-1, "Timeout", DateTime.Now);
         }
 
-        public void Vcc3()
+        public Measure Vcc3(int timeout)
         {
             //Prepare the package
             Request req = new Request(Method.GET);
             req.Accept = MediaType.ApplicationJson;
-            req.URI = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort, "sensors/humidity").Uri;
+            req.URI = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort, "sensors/vdd3").Uri;
 
             //Send Package
             req.Send(_endpoint);
-            req.Respond += delegate(object sender, ResponseEventArgs e)
+            req.Response = req.WaitForResponse(10000);
+            if (req.Response != null && req.Response.PayloadSize != 0)
             {
-                if (e.Response != null)
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Vcc3));
+                try
                 {
-                    if (e.Response.PayloadSize != 0)
-                    {
-                        DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Vcc3));
-                        MemoryStream stream1 = new MemoryStream(e.Response.Payload);
-                        Vcc3 v = (Vcc3)ser.ReadObject(stream1);
-                        vcc3.Add(new Measure(v.voltage, DateTime.Now));
-                    }
-                    else
-                    {
-                        vcc3.Add(new Measure(-1, DateTime.Now));
-                    }
+                    MemoryStream stream1 = new MemoryStream(req.Response.Payload);
+                    Vcc3 v = (Vcc3)ser.ReadObject(stream1);
+                    return new Measure(v.voltage, v.unit, DateTime.Now);
                 }
-                else
+                catch (Exception)
                 {
-                    vcc3.Add(new Measure(-1, DateTime.Now));
+                    return new Measure(-1, "Serialization Error", DateTime.Now);
                 }
-            };
-        }
-
-        public System.Data.DataTable getPing(System.Data.DataTable tablePing)
-        {
-            foreach (Measure t in ping)
-            {
-                System.Data.DataRow row = tablePing.NewRow();
-                row[0] = ip;
-                row[1] = t.value;
-                row[2] = hops;
-                tablePing.Rows.Add(row);
+                        
             }
-            return tablePing;
+            return new Measure(-1, "Timeout", DateTime.Now);
         }
 
-        public System.Data.DataTable getTroughput(System.Data.DataTable tableTroughput)
-        {
-            foreach (Measure t in troughput)
-            {
-                System.Data.DataRow row = tableTroughput.NewRow();
-                row[0] = ip;
-                row[1] = t.value;
-                row[2] = hops;
-                tableTroughput.Rows.Add(row);
-            }
-            return tableTroughput;
-        }
-
-        public void getHops()
+        public Measure Hops(int timeout)
         {
             Request req = new Request(Method.GET);
             req.Accept = MediaType.ApplicationJson;
@@ -237,40 +155,32 @@ namespace CoAP_Analyzer_CLI
             req.URI = uri;
 
             req.Send(_endpoint);
-            req.Respond += delegate(object sender, ResponseEventArgs e)
+            req.Response = req.WaitForResponse(10000);
+            if (req.Response != null  && req.Response.PayloadSize != 0)
             {
-                hops = Convert.ToInt32(e.Response.Payload.ToString());
-            };
+                return new Measure(Convert.ToInt32(req.Response.Payload.ToString()), "Hops", DateTime.Now);
+            }
+            return new Measure(-1, "Timeout", DateTime.Now);
         }
 
-        public void Ping()
+        public Measure Ping(int timeout)
         {
-            _conf.DefaultBlockSize = 32;
-            _conf.MaxMessageSize = 32;
-
-            IEndPoint _endpoint;
-            _endpoint = new CoAPEndPoint(_conf);
-            _endpoint.Start();
-
-            Request req = new Request(Method.PUT);
-            req.SetPayload(String.Empty, MediaType.TextPlain);
+            Request req = new Request(Method.GET);
             req.URI = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort).Uri;
 
             req.Send(_endpoint);
-            req.Respond += delegate(object sender, ResponseEventArgs e)
+            req.Response = req.WaitForResponse(10000);
+            if (req.Response != null)
             {
-                if (e.Response != null)
-                {
-                    ping.Add(new Measure(e.Response.RTT, DateTime.Now));
-                }
-                else
-                {
-                    ping.Add(new Measure(-1, DateTime.Now));
-                }
-            };
+                    return new Measure(req.Response.RTT, "ms", DateTime.Now);
+            }
+            else
+            {
+                return new Measure(-1, "Timeout", DateTime.Now);
+            }
         }
 
-        public void Troughput(int bytes)
+        public Measure Troughput(int bytes)
         {
             //Prepare the package
             String payload = new String('X', bytes);
@@ -282,18 +192,15 @@ namespace CoAP_Analyzer_CLI
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             req.Send(_endpoint);
-            req.Respond += delegate(object sender, ResponseEventArgs e)
+            req.Response = req.WaitForResponse(100000);
+            stopWatch.Stop();
+            if (req.Response != null){
+                return new Measure((double)bytes / (double)stopWatch.ElapsedMilliseconds, "bytes/ms", DateTime.Now);
+            }
+            else
             {
-                stopWatch.Stop();
-                if (e.Response != null)
-                {
-                    troughput.Add(new Measure((double)bytes / (double)stopWatch.ElapsedMilliseconds, DateTime.Now));
-                }
-                else
-                {
-                    troughput.Add(new Measure(-1, DateTime.Now));
-                }
-            };
+                return new Measure(-1, "Timeout", DateTime.Now);
+            }
         }
     }
 }

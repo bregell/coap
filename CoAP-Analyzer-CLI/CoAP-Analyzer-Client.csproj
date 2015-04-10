@@ -50,10 +50,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>3FC5A019EE1AE9E2AD2DA71DB597CFE80360810F</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>A4EDB23535A52EBD263396FD36AC4C6C45715AC3</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>CoAP-Analyzer-CLI_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>CoAP-Analyzer-Client_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="CoAP-Analyzer-CLI_TemporaryKey.pfx" />
+    <None Include="CoAP-Analyzer-Client_TemporaryKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
