@@ -7,19 +7,34 @@ using System.Diagnostics;
 using CoAP;
 using CoAP.Net;
 
-namespace CoAP_Analyzer_CLI
+namespace CoAP_Analyzer_Client
 {
-    class Host
+    public class Host
     {
-        public IPAddress ip { get; private set; }
+        #region Members
+        IPAddress _ip;
+        CoapConfig _conf;
+        IEndPoint _endpoint;
+        #endregion
 
-        private CoapConfig _conf;
-        private IEndPoint _endpoint;
+        #region Properties
+        public IPAddress IP
+        {
+            get
+            {
+                return this._ip;
+            }
+            set
+            {
+                this._ip = value;
+            }
+        }
+        #endregion
 
+        #region Construction
         public Host(string ip)
         {
-            this.ip = IPAddress.Parse(ip);
-
+            this._ip = IPAddress.Parse(ip);
             _conf = new CoapConfig();
             _conf.DefaultBlockSize = 64;
             _conf.MaxMessageSize = 64;
@@ -27,13 +42,24 @@ namespace CoAP_Analyzer_CLI
             _endpoint.Start();
         }
 
+        public Host()
+        {
+            _conf = new CoapConfig();
+            _conf.DefaultBlockSize = 64;
+            _conf.MaxMessageSize = 64;
+            _endpoint = new CoAPEndPoint(_conf);
+            _endpoint.Start();
+        }
+        #endregion
+
+        #region Methods
         public Measure Temp(int timeout)
         {
             timeout = (timeout == 0) ? System.Threading.Timeout.Infinite : timeout;
             //Prepare the package
             Request req = new Request(Method.GET);
             req.Accept = MediaType.ApplicationJson;
-            Uri uri = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort, "sensors/temp").Uri;
+            Uri uri = new UriBuilder(CoapConstants.UriScheme, _ip.ToString(), CoapConstants.DefaultPort, "sensors/temp").Uri;
             req.URI = uri;
 
             //Send Package
@@ -61,7 +87,7 @@ namespace CoAP_Analyzer_CLI
             //Prepare the package
             Request req = new Request(Method.GET);
             req.Accept = MediaType.ApplicationJson;
-            Uri uri = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort, "sensors/light").Uri;
+            Uri uri = new UriBuilder(CoapConstants.UriScheme, _ip.ToString(), CoapConstants.DefaultPort, "sensors/light").Uri;
             req.URI = uri;
 
             //Send Package
@@ -88,7 +114,7 @@ namespace CoAP_Analyzer_CLI
             //Prepare the package
             Request req = new Request(Method.GET);
             req.Accept = MediaType.ApplicationJson;
-            Uri uri = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort, "sensors/humidity").Uri;
+            Uri uri = new UriBuilder(CoapConstants.UriScheme, _ip.ToString(), CoapConstants.DefaultPort, "sensors/humidity").Uri;
             req.URI = uri;
 
             //Send Package
@@ -115,7 +141,7 @@ namespace CoAP_Analyzer_CLI
             //Prepare the package
             Request req = new Request(Method.GET);
             req.Accept = MediaType.ApplicationJson;
-            req.URI = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort, "sensors/vdd3").Uri;
+            req.URI = new UriBuilder(CoapConstants.UriScheme, _ip.ToString(), CoapConstants.DefaultPort, "sensors/vdd3").Uri;
 
             //Send Package
             req.Send(_endpoint);
@@ -142,7 +168,7 @@ namespace CoAP_Analyzer_CLI
         {
             Request req = new Request(Method.GET);
             req.Accept = MediaType.ApplicationJson;
-            Uri uri = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort, "info/hops").Uri;
+            Uri uri = new UriBuilder(CoapConstants.UriScheme, _ip.ToString(), CoapConstants.DefaultPort, "info/hops").Uri;
             req.URI = uri;
 
             req.Send(_endpoint);
@@ -157,7 +183,7 @@ namespace CoAP_Analyzer_CLI
         public Measure Ping(int timeout)
         {
             Request req = new Request(Method.GET);
-            req.URI = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort).Uri;
+            req.URI = new UriBuilder(CoapConstants.UriScheme, _ip.ToString(), CoapConstants.DefaultPort).Uri;
 
             req.Send(_endpoint);
             req.Response = req.WaitForResponse(10000);
@@ -177,7 +203,7 @@ namespace CoAP_Analyzer_CLI
             String payload = new String('X', bytes);
             Request req = new Request(Method.PUT);
             req.SetPayload(payload, MediaType.TextPlain);
-            req.URI = new UriBuilder(CoapConstants.UriScheme, ip.ToString(), CoapConstants.DefaultPort, "data/buffer").Uri;
+            req.URI = new UriBuilder(CoapConstants.UriScheme, _ip.ToString(), CoapConstants.DefaultPort, "data/buffer").Uri;
 
             //Send Package
             Stopwatch stopWatch = new Stopwatch();
@@ -193,5 +219,6 @@ namespace CoAP_Analyzer_CLI
                 return new Measure(-1, "Timeout", DateTime.Now);
             }
         }
-    }
+        #endregion
+    }   
 }

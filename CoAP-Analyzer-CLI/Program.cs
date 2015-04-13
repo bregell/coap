@@ -7,9 +7,10 @@ using ExcelLibrary;
 using ExcelLibrary.SpreadSheet;
 using CoAP.Log;
 
-namespace CoAP_Analyzer_CLI
+namespace CoAP_Analyzer_Client
 {
-    class Program
+
+    public class Program
     {    
         static int _rate = 1000*60;
         static void Main(string[] args)
@@ -66,7 +67,7 @@ namespace CoAP_Analyzer_CLI
 
 
 
-        private static void saveToFile(List<Worker> _workers, string _filename)
+        public static void saveToFile(List<Worker> _workers, string _filename)
         {
             DataSet _ds = new DataSet("Output");
             List<DataTable> _tables = new List<DataTable>();
@@ -84,7 +85,7 @@ namespace CoAP_Analyzer_CLI
             {
                 foreach (Measure m in w._measure)
                 {
-                    _tables.Find(x => x.TableName == w._methodToRun.Method.Name).Rows.Add(w._host.ip, m.value, m.unit, m.time);
+                    _tables.Find(x => x.TableName == w._methodToRun.Method.Name).Rows.Add(w._host.IP, m.value, m.unit, m.time);
                 }
             }
             foreach (DataTable t in _tables)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace CoAP_Analyzer_CLI
+namespace CoAP_Analyzer_Client
 {
     [DataContract]
     class Temp
@@ -61,7 +61,7 @@ namespace CoAP_Analyzer_CLI
 
     }
 
-    class Measure
+    public class Measure
     {
         public double value;
         public string unit;

@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoAP-Analyzer-Client", "CoA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoAP-Analyzer-Server", "CoAP-Analyzer-Server\CoAP-Analyzer-Server.csproj", "{0DCD0844-F021-44D2-BBF6-A2F960A59AD6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoAp-Analyzer-GUI", "CoAp-Analyzer-GUI\CoAp-Analyzer-GUI.csproj", "{51CFFB6B-2A16-4855-896F-A8F8927A5019}"
+	ProjectSection(ProjectDependencies) = postProject
+		{55957699-F124-4891-B7ED-F4F2D935698E} = {55957699-F124-4891-B7ED-F4F2D935698E}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,9 +23,12 @@ Global
 		{55957699-F124-4891-B7ED-F4F2D935698E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55957699-F124-4891-B7ED-F4F2D935698E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0DCD0844-F021-44D2-BBF6-A2F960A59AD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0DCD0844-F021-44D2-BBF6-A2F960A59AD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DCD0844-F021-44D2-BBF6-A2F960A59AD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DCD0844-F021-44D2-BBF6-A2F960A59AD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51CFFB6B-2A16-4855-896F-A8F8927A5019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51CFFB6B-2A16-4855-896F-A8F8927A5019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51CFFB6B-2A16-4855-896F-A8F8927A5019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51CFFB6B-2A16-4855-896F-A8F8927A5019}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
