@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DEBUG
+using System;
 using System.Threading;
 using System.Collections.Generic;
 
@@ -8,36 +9,50 @@ namespace CoAP_Analyzer_CLI
     {
         static public Random r = new Random();
     }
+
     class Worker
     {
         
         private bool _shouldStop;
-        public Host h { get; private set; }
-        public int rate { get; private set; }
-        private int parameter { get; set; }
+        private int _parameter;
+
+        public int _startTime { private get; set; }
+        public Host _host { get; private set; }
+        public int _rate { get; private set; }   
         public bool _done { get; private set; }
-        public Func<int, Measure> methodToRun { get; private set; }
-        public List<Measure> measure { get; private set; }
+        public Func<int, Measure> _methodToRun { get; private set; }
+        public List<Measure> _measure { get; private set; }
 
         public Worker(Host host, Func<int, Measure> f, int r, int param)
         {
-            h = host;
+            _host = host;
             _done = false;
             _shouldStop = false;
-            rate = r;
-            parameter = param;
-            methodToRun = f;
-            measure = new List<Measure>();
+            _rate = r;
+            _parameter = param;
+            _methodToRun = f;
+            _measure = new List<Measure>();
+            _startTime = 0;
         }
 
         public void Work()
         {
-           
-            Thread.Sleep((int)(RND.r.NextDouble() * rate));
+            waitCheck(1000, _startTime);
             while (!_shouldStop)
             {
-                measure.Add(methodToRun(parameter));
-                Thread.Sleep(rate);
+                Measure m = _methodToRun(_parameter);
+                _measure.Add(m);
+                #if DEBUG
+                System.Console.Write(_host.ip.ToString());
+                System.Console.Write("@");
+                System.Console.Write(_methodToRun.Method.Name);
+                System.Console.Write(":");
+                System.Console.Write(m.value);
+                System.Console.Write(" ");
+                System.Console.Write(m.unit);
+                System.Console.Write("\n");
+                #endif
+                waitCheck(1000, _rate);
             }
             _done = true;
         }
@@ -45,5 +60,23 @@ namespace CoAP_Analyzer_CLI
         {
             _shouldStop = true;
         }
+
+        private void waitCheck(int _inc, int _time)
+        {
+            int _sleept = 0;
+            while (!_shouldStop && _sleept < _time)
+            {
+                Thread.Sleep(_inc);
+                _sleept += _inc;
+            }
+        }
+    }
+
+    class WorkerComparer : IComparer<Worker>
+    {
+        public int Compare(Worker _w1, Worker _w2){
+            return String.Compare(_w1._methodToRun.Method.Name, _w2._methodToRun.Method.Name);
+        }
+
     }
 }

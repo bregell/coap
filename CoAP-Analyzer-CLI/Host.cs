@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DEBUG
+using System;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Net;
@@ -44,6 +45,7 @@ namespace CoAP_Analyzer_CLI
                 try {
                     MemoryStream stream1 = new MemoryStream(req.Response.Payload);
                     Temp t = (Temp)ser.ReadObject(stream1);
+                    
                     return new Measure(t.temp, t.unit, DateTime.Now);
                 }
                 catch (Exception)
@@ -184,7 +186,7 @@ namespace CoAP_Analyzer_CLI
             req.Response = req.WaitForResponse(100000);
             stopWatch.Stop();
             if (req.Response != null){
-                return new Measure((double)bytes / (double)stopWatch.ElapsedMilliseconds, "bytes/ms", DateTime.Now);
+                return new Measure( ((bytes * 8.0) / stopWatch.ElapsedMilliseconds) * 1000.0  / 1024.0, "kbit/s", DateTime.Now);
             }
             else
             {
