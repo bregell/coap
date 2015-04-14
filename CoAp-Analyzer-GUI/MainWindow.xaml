@@ -1,0 +1,32 @@
+﻿<UserControl  x:Class="CoAp_Analyzer_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
+        xmlns:local="clr-namespace:CoAp_Analyzer_GUI" HorizontalAlignment="Left" VerticalAlignment="Top">
+    <Grid>
+        <TabControl HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TabItem Header="Control">
+                <DockPanel>
+                    <Button x:Name="StartBtn" Content="Start" HorizontalAlignment="Left" Click="StartBtn_Click" />
+                    <Button x:Name="SaveBtn" Content="Save" HorizontalAlignment="Left"  Click="SaveBtn_Click"/>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Hosts">
+                <local:HostList VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            </TabItem>
+            <TabItem Header="Charts">
+                <local:Chart VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            </TabItem>
+            <TabItem Header="Workers">
+                <local:MesureList VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
+
+    
+<!--<Grid>
+    <Button x:Name="ClearhostField" Content="Clear" HorizontalAlignment="Left" Margin="420,521,0,0" VerticalAlignment="Top" Width="75" Height="25" Click="ClearhostField_Click" TabIndex="4"/>
+    <Button x:Name="StartBtn" Content="Start" HorizontalAlignment="Left" Margin="629,521,0,0" VerticalAlignment="Top" Width="75" Height="25" Click="StartBtn_Click" TabIndex="5" IsDefault="True"/>
+    
+    <Button x:Name="SaveBtn" Content="Save" HorizontalAlignment="Left" Margin="709,521,0,0" VerticalAlignment="Top" Width="75" Height="25" Click="SaveBtn_Click" TabIndex="5"/>
+</Grid>-->

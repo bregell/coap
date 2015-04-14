@@ -1,0 +1,23 @@
+﻿<UserControl  x:Class="CoAp_Analyzer_GUI.HostList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" >
+    <StackPanel>
+        <ListView x:Name="List" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" ItemsSource="{Binding Hosts}" Height="240" MouseDoubleClick="List_MouseDoubleClick">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding IP}" Width="200" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Rate}" Width="150" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <DockPanel>
+            <TextBox x:Name="NewHostBox" ToolTip="IPv6 Address" Width="150" Margin="0,0,0,0" HorizontalAlignment="Left" />
+            <TextBox x:Name="NewRateBox" ToolTip="Rate(Seconds)" Width="100" Margin="0,0,0,0" HorizontalAlignment="Left" />
+            <Button x:Name="AddHost" Content="Add Host" Margin="0,0,0,0" HorizontalAlignment="Left" Click="AddHost_Click" />
+            <Button x:Name="ClearHost" Content="Clear" Margin="0,0,0,0" HorizontalAlignment="Left" Click="ClearHost_Click" />
+        </DockPanel>
+    </StackPanel>
+</UserControl>
