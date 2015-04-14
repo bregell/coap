@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CoAp_Analyzer_GUI
+namespace CoAP_Analyzer_GUI
 {
     /// <summary>
     /// Interaction logic for Page1.xaml

@@ -91,10 +91,12 @@
   <ItemGroup>
     <Compile Include="Host.cs" />
     <Compile Include="Measurements.cs" />
+    <Compile Include="Models\HostModel.cs" />
+    <Compile Include="Models\MeasureModel.cs" />
+    <Compile Include="Models\WorkerModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Worker.cs" />
-    <Compile Include="WorkerModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

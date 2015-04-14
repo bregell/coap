@@ -15,15 +15,17 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using CoAP_Analyzer_Client;
+using CoAP_Analyzer_Client.Models;
 using CoAP.Log;
 
-namespace CoAp_Analyzer_GUI
+namespace CoAP_Analyzer_GUI
 {
 
     public static class SharedData
     {
         public static HostListModel _hostList = new HostListModel();
         public static WorkerListModel _workerList = new WorkerListModel();
+        public static MeasureListModel _measureList = new MeasureListModel();
         public static List<Worker> _removedWorkers = new List<Worker>();
         public static List<Thread> _threads = new List<Thread>();
         public static bool _running = false;

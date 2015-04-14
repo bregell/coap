@@ -13,17 +13,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CoAp_Analyzer_GUI
+namespace CoAP_Analyzer_GUI.UserControls
 {
     /// <summary>
-    /// Interaction logic for MesureList.xaml
+    /// Interaction logic for MeasureList.xaml
     /// </summary>
-    public partial class MesureList : UserControl
+    public partial class MeasureList : UserControl
     {
-        public MesureList()
+        public MeasureList()
         {
             InitializeComponent();
-            this.DataContext = SharedData._workerList;
+            this.DataContext = SharedData._measureList;
         }
     }
 }

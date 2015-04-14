@@ -15,9 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
-using CoAP_Analyzer_Client;
+using CoAP_Analyzer_Client.Models;
 
-namespace CoAp_Analyzer_GUI
+namespace CoAP_Analyzer_GUI.UserControls
 {
     /// <summary>
     /// Interaction logic for HostList.xaml
@@ -104,17 +104,17 @@ namespace CoAp_Analyzer_GUI
 
         private void createWorkers(HostViewModel hwm)
         {
-            SharedData._workerList.Workers.Add(new WorkerModel(new Worker(hwm.Host, hwm.Host.Temp, hwm.Rate, 0)));
-            SharedData._workerList.Workers.Add(new WorkerModel(new Worker(hwm.Host, hwm.Host.Vcc3, hwm.Rate, 0)));
-            SharedData._workerList.Workers.Add(new WorkerModel(new Worker(hwm.Host, hwm.Host.Ping, hwm.Rate, 0)));
-            SharedData._workerList.Workers.Add(new WorkerModel(new Worker(hwm.Host, hwm.Host.Humidity, hwm.Rate, 0)));
-            SharedData._workerList.Workers.Add(new WorkerModel(new Worker(hwm.Host, hwm.Host.Light, hwm.Rate, 0)));
-            SharedData._workerList.Workers.Add(new WorkerModel(new Worker(hwm.Host, hwm.Host.Troughput, hwm.Rate, 1024)));
+            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Temp,         hwm.Rate, 0));
+            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Vcc3,         hwm.Rate, 0));
+            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Ping,         hwm.Rate, 0));
+            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Humidity,     hwm.Rate, 0));
+            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Light,        hwm.Rate, 0));
+            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Troughput,    hwm.Rate, 1024));
             int i = 0;
-            SharedData._workerList.Workers.OrderBy(x => x.Worker._methodToRun.Method.Name);
+            SharedData._workerList.Workers.OrderBy(x => x.Worker.MethodToRun.Method.Name);
             foreach (WorkerModel w in SharedData._workerList.Workers)
             {
-                w.Worker._startTime = (w.Worker._rate / SharedData._workerList.Workers.Count) * i++;
+                w.Worker._startTime = (w.Worker.Rate / SharedData._workerList.Workers.Count) * i++;
                 Thread t = new Thread(w.Worker.Work);
                 t.IsBackground = true;
                 SharedData._threads.Add(t);
@@ -128,7 +128,7 @@ namespace CoAp_Analyzer_GUI
 
         private void removeWorkers(HostViewModel hwm)
         {
-            List<WorkerModel> _wl = SharedData._workerList.Workers.ToList().FindAll(x => x.Worker._host.IP.ToString() == hwm.IP.ToString());
+            List<WorkerModel> _wl = SharedData._workerList.Workers.ToList().FindAll(x => x.Worker.Host.IP.ToString() == hwm.IP.ToString());
             foreach (WorkerModel _w in _wl)
             {
                 _w.Worker.Stop();

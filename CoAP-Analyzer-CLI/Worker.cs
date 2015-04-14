@@ -5,6 +5,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using CoAP_Analyzer_Client.Models;
 
 namespace CoAP_Analyzer_Client
 {
@@ -19,12 +20,12 @@ namespace CoAP_Analyzer_Client
         private bool _shouldStop;
         private bool _shouldPause;
         private int _parameter;
-        public int _startTime { private get; set; }
-        public Host _host { get; private set; }
-        public int _rate { get; private set; }   
-        public bool _done { get; private set; }
-        public Func<int, Measure> _methodToRun { get; private set; }
-        public ObservableCollection<MeasureModel> _measures { get; private set; }
+        public int _startTime;
+        private Host _host;
+        private int _rate;
+        public bool _done;
+        private Func<int, Measure> _methodToRun;
+        private ObservableCollection<MeasureModel> _measures;
         #endregion
 
         #region Construction
@@ -43,6 +44,53 @@ namespace CoAP_Analyzer_Client
         #endregion
 
         #region Properties
+        public int Rate
+        {
+            get
+            {
+                return _rate;
+            }
+            set
+            {
+                _rate = value;
+            }
+
+        }
+        public int Parameter
+        {
+            get
+            {
+                return _parameter;
+            }
+            set
+            {
+                _parameter = value;
+            }
+
+        }
+        public Func<int, Measure> MethodToRun
+        {
+            get
+            {
+                return _methodToRun;
+            }
+            set
+            {
+                _methodToRun = value;
+            }
+
+        }
+        public Host Host
+        {
+            get
+            {
+                return _host;
+            }
+            set
+            {
+                _host = value;
+            }
+        }
         public ObservableCollection<MeasureModel> Measures
         {
             get
@@ -115,7 +163,7 @@ namespace CoAP_Analyzer_Client
     public class WorkerComparer : IComparer<Worker>
     {
         public int Compare(Worker _w1, Worker _w2){
-            return String.Compare(_w1._methodToRun.Method.Name, _w2._methodToRun.Method.Name);
+            return String.Compare(_w1.MethodToRun.Method.Name, _w2.MethodToRun.Method.Name);
         }
 
     }

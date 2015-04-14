@@ -7,7 +7,7 @@
     <ProjectGuid>{51CFFB6B-2A16-4855-896F-A8F8927A5019}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CoAp_Analyzer_GUI</RootNamespace>
+    <RootNamespace>CoAP_Analyzer_GUI</RootNamespace>
     <AssemblyName>CoAp-Analyzer-GUI</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -61,7 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="HostList.xaml">
+    <Page Include="UserControls\HostList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -73,10 +73,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="HostList.xaml.cs">
+    <Compile Include="UserControls\HostList.xaml.cs">
       <DependentUpon>HostList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HostModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -85,7 +84,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MesureList.xaml">
+    <Page Include="UserControls\MeasureList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\WorkerList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -94,8 +97,11 @@
     <Compile Include="Chart.xaml.cs">
       <DependentUpon>Chart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MesureList.xaml.cs">
-      <DependentUpon>MesureList.xaml</DependentUpon>
+    <Compile Include="UserControls\MeasureList.xaml.cs">
+      <DependentUpon>MeasureList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\WorkerList.xaml.cs">
+      <DependentUpon>WorkerList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

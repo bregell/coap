@@ -6,6 +6,7 @@ using System.Linq;
 using ExcelLibrary;
 using ExcelLibrary.SpreadSheet;
 using CoAP.Log;
+using CoAP_Analyzer_Client.Models;
 
 namespace CoAP_Analyzer_Client
 {
@@ -83,9 +84,9 @@ namespace CoAP_Analyzer_Client
             }
             foreach (Worker w in _workers)
             {
-                foreach (MeasureModel m in w._measures)
+                foreach (MeasureModel m in w.Measures)
                 {
-                    _tables.Find(x => x.TableName == w._methodToRun.Method.Name).Rows.Add(w._host.IP, m.Value, m.Unit, m.Time);
+                    _tables.Find(x => x.TableName == w.MethodToRun.Method.Name).Rows.Add(w.Host.IP, m.Value, m.Unit, m.Time);
                 }
             }
             foreach (DataTable t in _tables)

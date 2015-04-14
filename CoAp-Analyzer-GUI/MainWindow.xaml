@@ -1,7 +1,7 @@
-﻿<UserControl  x:Class="CoAp_Analyzer_GUI.MainWindow"
+﻿<UserControl  x:Class="CoAP_Analyzer_GUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
-        xmlns:local="clr-namespace:CoAp_Analyzer_GUI" HorizontalAlignment="Left" VerticalAlignment="Top">
+        xmlns:usr="clr-namespace:CoAP_Analyzer_GUI.UserControls" HorizontalAlignment="Left" VerticalAlignment="Top">
     <Grid>
         <TabControl HorizontalAlignment="Left" VerticalAlignment="Top">
             <TabItem Header="Control">
@@ -11,13 +11,16 @@
                 </DockPanel>
             </TabItem>
             <TabItem Header="Hosts">
-                <local:HostList VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <usr:HostList VerticalAlignment="Top" HorizontalAlignment="Left"/>
             </TabItem>
             <TabItem Header="Charts">
-                <local:Chart VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <!--<local:Chart VerticalAlignment="Top" HorizontalAlignment="Left"/>-->
             </TabItem>
             <TabItem Header="Workers">
-                <local:MesureList VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <usr:WorkerList VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            </TabItem>
+            <TabItem Header="Measures">
+                <usr:MeasureList VerticalAlignment="Top" HorizontalAlignment="Left"/>
             </TabItem>
         </TabControl>
     </Grid>

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 
-namespace CoAP_Analyzer_Client
+namespace CoAP_Analyzer_Client.Models
 {
     public class MeasureModel : INotifyPropertyChanged
     {
@@ -112,78 +109,39 @@ namespace CoAP_Analyzer_Client
 
     }
 
-
-    public class WorkerModel : INotifyPropertyChanged
+    public class MeasureListModel : INotifyPropertyChanged
     {
         #region Members
-        Worker _worker;
-        #endregion
-
-        #region Properties
-        public Worker Worker
-        {
-            get
-            {
-                return _worker;
-            }
-            set
-            {
-                _worker = value;
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return _worker._methodToRun.Method.Name.ToString();
-            }
-        }
-
-        public IPAddress IP
-        {
-            get
-            {
-                return _worker._host.IP;
-            }
-        }
-
-        public int Rate
-        {
-            get
-            {
-                return _worker._rate;
-            }
-        }
-
-        public ObservableCollection<MeasureModel> Measure
-        {
-            get
-            {
-                return _worker._measures;
-            }
-        }
+        ObservableCollection<MeasureModel> _measures;
         #endregion
 
         #region Construction
-        public WorkerModel()
+        public MeasureListModel()
         {
-            _worker = null;
+            _measures = new ObservableCollection<MeasureModel>();
         }
-        public WorkerModel(Worker _w)
+        #endregion
+
+        #region Properties
+        public ObservableCollection<MeasureModel> Measures
         {
-            _worker = _w;
+            get
+            {
+                return _measures;
+            }
+            set
+            {
+                _measures = value;
+                RaisePropertyChanged("Measures");
+            }
         }
         #endregion
 
         #region INotifyPropertyChanged Members
-
         public event PropertyChangedEventHandler PropertyChanged;
-
         #endregion
 
         #region Methods
-
         private void RaisePropertyChanged(string propertyName)
         {
             // take a copy to prevent thread issues
@@ -191,34 +149,6 @@ namespace CoAP_Analyzer_Client
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        #endregion
-    }
-
-    public class WorkerListModel
-    {
-        #region Members
-        ObservableCollection<WorkerModel> _workers;
-        #endregion
-
-        #region Construction
-        public WorkerListModel()
-        {
-            _workers = new ObservableCollection<WorkerModel>();
-        }
-        #endregion
-
-        #region Properties
-        public ObservableCollection<WorkerModel> Workers
-        {
-            get
-            {
-                return _workers;
-            }
-            set
-            {
-                _workers = value;
             }
         }
         #endregion

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using CoAP_Analyzer_Client;
 
-namespace CoAp_Analyzer_GUI
+namespace CoAP_Analyzer_GUI
 {
     /// <summary>
     /// Interaction logic for App.xaml

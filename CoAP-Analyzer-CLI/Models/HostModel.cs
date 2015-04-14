@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CoAP_Analyzer_Client;
 
-namespace CoAp_Analyzer_GUI
+namespace CoAP_Analyzer_Client.Models
 {
     public class HostViewModel : INotifyPropertyChanged
     {
