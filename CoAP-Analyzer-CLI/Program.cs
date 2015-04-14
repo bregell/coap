@@ -83,9 +83,9 @@ namespace CoAP_Analyzer_Client
             }
             foreach (Worker w in _workers)
             {
-                foreach (Measure m in w._measure)
+                foreach (MeasureModel m in w._measures)
                 {
-                    _tables.Find(x => x.TableName == w._methodToRun.Method.Name).Rows.Add(w._host.IP, m.value, m.unit, m.time);
+                    _tables.Find(x => x.TableName == w._methodToRun.Method.Name).Rows.Add(w._host.IP, m.Value, m.Unit, m.Time);
                 }
             }
             foreach (DataTable t in _tables)

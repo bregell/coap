@@ -1,7 +1,10 @@
 ﻿#define DEBUG
 using System;
+using System.Windows;
 using System.Threading;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace CoAP_Analyzer_Client
 {
@@ -12,6 +15,7 @@ namespace CoAP_Analyzer_Client
 
     public class Worker
     {
+        #region Members
         private bool _shouldStop;
         private bool _shouldPause;
         private int _parameter;
@@ -20,8 +24,10 @@ namespace CoAP_Analyzer_Client
         public int _rate { get; private set; }   
         public bool _done { get; private set; }
         public Func<int, Measure> _methodToRun { get; private set; }
-        public List<Measure> _measure { get; private set; }
+        public ObservableCollection<MeasureModel> _measures { get; private set; }
+        #endregion
 
+        #region Construction
         public Worker(Host host, Func<int, Measure> f, int r, int param)
         {
             _host = host;
@@ -31,17 +37,36 @@ namespace CoAP_Analyzer_Client
             _rate = r;
             _parameter = param;
             _methodToRun = f;
-            _measure = new List<Measure>();
+            _measures = new ObservableCollection<MeasureModel>();
             _startTime = 0;
         }
+        #endregion
 
+        #region Properties
+        public ObservableCollection<MeasureModel> Measures
+        {
+            get
+            {
+                return _measures;
+            }
+            set
+            {
+                _measures = value;
+            }
+        }
+        #endregion
+
+        #region Methods
         public void Work()
         {
             waitCheck(1000, _startTime);
             while (!_shouldStop)
             {
                 Measure m = _methodToRun(_parameter);
-                _measure.Add(m);
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    _measures.Add(new MeasureModel(m, _host.IP));
+                });               
                 #if DEBUG
                 System.Console.Write(_host.IP.ToString());
                 System.Console.Write("@");
@@ -84,6 +109,7 @@ namespace CoAP_Analyzer_Client
                 }
             }
         }
+        #endregion
     }
 
     public class WorkerComparer : IComparer<Worker>

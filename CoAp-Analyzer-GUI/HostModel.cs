@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CoAP_Analyzer_Client;
@@ -55,7 +56,6 @@ namespace CoAp_Analyzer_GUI
                 RaisePropertyChanged("Rate");
             }
         }
-
         #endregion
 
         #region Construction
@@ -63,16 +63,18 @@ namespace CoAp_Analyzer_GUI
         {
             _host = new Host { IP = null};
         }
+
+        public HostViewModel(IPAddress _ip)
+        {
+            _host = new Host { IP = _ip };
+        }
         #endregion
 
         #region INotifyPropertyChanged Members
-
         public event PropertyChangedEventHandler PropertyChanged;
-
         #endregion
 
         #region Methods
-
         private void RaisePropertyChanged(string propertyName)
         {
             // take a copy to prevent thread issues
