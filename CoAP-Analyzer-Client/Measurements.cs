@@ -73,5 +73,20 @@ namespace CoAP_Analyzer_Client
             value = v;
             time = t;
         }
+
+        public double Value
+        {
+            get
+            {
+                return value;
+            }
+        }
+        public DateTime Time
+        {
+            get
+            {
+                return time;
+            }
+        }
     }
 }

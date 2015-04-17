@@ -36,8 +36,8 @@ namespace CoAP_Analyzer_Client
         {
             this._ip = IPAddress.Parse(ip);
             _conf = new CoapConfig();
-            _conf.DefaultBlockSize = 64;
-            _conf.MaxMessageSize = 64;
+            _conf.DefaultBlockSize = 32;
+            _conf.MaxMessageSize = 32;
             _endpoint = new CoAPEndPoint(_conf);
             _endpoint.Start();
         }
@@ -45,8 +45,8 @@ namespace CoAP_Analyzer_Client
         public Host()
         {
             _conf = new CoapConfig();
-            _conf.DefaultBlockSize = 64;
-            _conf.MaxMessageSize = 64;
+            _conf.DefaultBlockSize = 32;
+            _conf.MaxMessageSize = 32;
             _endpoint = new CoAPEndPoint(_conf);
             _endpoint.Start();
         }

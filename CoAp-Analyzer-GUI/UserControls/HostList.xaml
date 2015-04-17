@@ -3,21 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" >
-    <StackPanel>
-        <ListView x:Name="List" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" ItemsSource="{Binding Hosts}" Height="240" MouseDoubleClick="List_MouseDoubleClick">
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="400
+              ">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+        <ListView Grid.Row="0" x:Name="List" ItemsSource="{Binding Hosts}" MouseDoubleClick="List_MouseDoubleClick" BorderThickness="0">
             <ListView.View>
-                <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding IP}" Width="200" />
-                    <GridViewColumn DisplayMemberBinding="{Binding Rate}" Width="150" />
+                <GridView AllowsColumnReorder="True">
+                    <GridViewColumn Header="Host IP" DisplayMemberBinding="{Binding IP}" />
+                    <GridViewColumn Header="Rate(ms)" DisplayMemberBinding="{Binding Rate}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <DockPanel>
-            <TextBox x:Name="NewHostBox" ToolTip="IPv6 Address" Width="150" Margin="0,0,0,0" HorizontalAlignment="Left" />
-            <TextBox x:Name="NewRateBox" ToolTip="Rate(Seconds)" Width="100" Margin="0,0,0,0" HorizontalAlignment="Left" />
-            <Button x:Name="AddHost" Content="Add Host" Margin="0,0,0,0" HorizontalAlignment="Left" Click="AddHost_Click" />
-            <Button x:Name="ClearHost" Content="Clear" Margin="0,0,0,0" HorizontalAlignment="Left" Click="ClearHost_Click" />
+        <DockPanel Grid.Row="1" HorizontalAlignment="Center">
+            <TextBox x:Name="NewHostBox" ToolTip="IPv6 Address" Width="150" />
+            <TextBox x:Name="NewRateBox" ToolTip="Rate(Seconds)" Width="50" />
+            <Button x:Name="AddHost" Content="Add Host" Width="70" Click="AddHost_Click" HorizontalAlignment="Left" />
+            <Button x:Name="ClearHost" Content="Clear" Width="70" Margin="0,0,0,0" Click="ClearHost_Click" HorizontalAlignment="Left" />
         </DockPanel>
-    </StackPanel>
+    </Grid>
 </UserControl>

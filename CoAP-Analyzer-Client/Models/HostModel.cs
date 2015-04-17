@@ -12,11 +12,24 @@ using CoAP_Analyzer_Client;
 
 namespace CoAP_Analyzer_Client.Models
 {
-    public class HostViewModel : INotifyPropertyChanged
+    public class HostModel : BaseModel
     {
         #region members
         Host _host;
         int _rate;
+        #endregion
+
+        #region Construction
+        public HostModel()
+        {
+            _host = new Host { IP = null };
+            Name = "Host";
+        }
+
+        public HostModel(IPAddress _ip)
+        {
+            _host = new Host { IP = _ip };
+        }
         #endregion
 
         #region Properties
@@ -57,51 +70,23 @@ namespace CoAP_Analyzer_Client.Models
             }
         }
         #endregion
-
-        #region Construction
-        public HostViewModel()
-        {
-            _host = new Host { IP = null};
-        }
-
-        public HostViewModel(IPAddress _ip)
-        {
-            _host = new Host { IP = _ip };
-        }
-        #endregion
-
-        #region INotifyPropertyChanged Members
-        public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
-
-        #region Methods
-        private void RaisePropertyChanged(string propertyName)
-        {
-            // take a copy to prevent thread issues
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        #endregion
     }
 
-    public class HostListModel
+    public class HostListModel : BaseModel
     {
         #region Members
-        ObservableCollection<HostViewModel> _hosts;
+        ObservableCollection<HostModel> _hosts;
         #endregion
 
         #region Construction
         public HostListModel()
         {
-            _hosts = new ObservableCollection<HostViewModel>();
+            _hosts = new ObservableCollection<HostModel>();
         }
         #endregion
 
         #region Properties
-        public ObservableCollection<HostViewModel> Hosts
+        public ObservableCollection<HostModel> Hosts
         {
             get
             {

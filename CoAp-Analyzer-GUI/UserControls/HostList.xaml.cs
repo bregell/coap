@@ -43,7 +43,7 @@ namespace CoAP_Analyzer_GUI.UserControls
             try
             {
 
-                HostViewModel h = (HostViewModel)List.SelectedItem;
+                HostModel h = (HostModel)List.SelectedItem;
                 NewHostBox.Text = h.IP.ToString();
                 NewRateBox.Text = h.Rate.ToString();
                 AddHost.Content = "Remove";
@@ -61,10 +61,10 @@ namespace CoAP_Analyzer_GUI.UserControls
             {
                 try
                 {
-                    HostViewModel host = SharedData._hostList.Hosts.FirstOrDefault(h => h.IP == IPAddress.Parse(NewHostBox.Text));
+                    HostModel host = SharedData._hostList.Hosts.FirstOrDefault(h => h.IP == IPAddress.Parse(NewHostBox.Text));
                     if (host == null)
                     {
-                        host = new HostViewModel();
+                        host = new HostModel();
                         host.IP = IPAddress.Parse(NewHostBox.Text);
                         host.Rate = Convert.ToInt32(NewRateBox.Text) * 1000;
                         createWorkers(host);
@@ -81,7 +81,7 @@ namespace CoAP_Analyzer_GUI.UserControls
             {
                 try
                 {
-                    HostViewModel host = SharedData._hostList.Hosts.First(_host => _host.IP.ToString() == NewHostBox.Text);
+                    HostModel host = SharedData._hostList.Hosts.First(_host => _host.IP.ToString() == NewHostBox.Text);
                     SharedData._hostList.Hosts.Remove(host);
                     removeWorkers(host);
                     NewHostBox.Text = "";
@@ -102,19 +102,20 @@ namespace CoAP_Analyzer_GUI.UserControls
             AddHost.Content = "Add Host";
         }
 
-        private void createWorkers(HostViewModel hwm)
+        private void createWorkers(HostModel hwm)
         {
-            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Temp,         hwm.Rate, 0));
-            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Vcc3,         hwm.Rate, 0));
-            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Ping,         hwm.Rate, 0));
-            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Humidity,     hwm.Rate, 0));
-            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Light,        hwm.Rate, 0));
-            SharedData._workerList.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Troughput,    hwm.Rate, 1024));
+            WorkerListModel _wlm = new WorkerListModel();
+            _wlm.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Temp,         hwm.Rate, 0));
+            _wlm.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Vcc3,         hwm.Rate, 0));
+            _wlm.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Ping,         hwm.Rate, 0));
+            _wlm.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Humidity,     hwm.Rate, 0));
+            _wlm.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Light,        hwm.Rate, 0));
+            _wlm.Workers.Add(new WorkerModel(hwm.Host, hwm.Host.Troughput,    hwm.Rate, 1024));
             int i = 0;
-            SharedData._workerList.Workers.OrderBy(x => x.Worker.MethodToRun.Method.Name);
-            foreach (WorkerModel w in SharedData._workerList.Workers)
+            _wlm.Workers.OrderBy(x => x.Worker.MethodToRun.Method.Name);
+            foreach (WorkerModel w in _wlm.Workers)
             {
-                w.Worker._startTime = (w.Worker.Rate / SharedData._workerList.Workers.Count) * i++;
+                w.Worker._startTime = (w.Worker.Rate / _wlm.Workers.Count) * i++;
                 Thread t = new Thread(w.Worker.Work);
                 t.IsBackground = true;
                 SharedData._threads.Add(t);
@@ -124,9 +125,10 @@ namespace CoAP_Analyzer_GUI.UserControls
                     w.Worker.Run();
                 }
             }
+            _wlm.Workers.ToList().ForEach(x => SharedData._workerList.Workers.Add(x));
         }
 
-        private void removeWorkers(HostViewModel hwm)
+        private void removeWorkers(HostModel hwm)
         {
             List<WorkerModel> _wl = SharedData._workerList.Workers.ToList().FindAll(x => x.Worker.Host.IP.ToString() == hwm.IP.ToString());
             foreach (WorkerModel _w in _wl)

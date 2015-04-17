@@ -1,35 +1,149 @@
-﻿<UserControl  x:Class="CoAP_Analyzer_GUI.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
-        xmlns:usr="clr-namespace:CoAP_Analyzer_GUI.UserControls" HorizontalAlignment="Left" VerticalAlignment="Top">
-    <Grid>
-        <TabControl HorizontalAlignment="Left" VerticalAlignment="Top">
-            <TabItem Header="Control">
-                <DockPanel>
-                    <Button x:Name="StartBtn" Content="Start" HorizontalAlignment="Left" Click="StartBtn_Click" />
-                    <Button x:Name="SaveBtn" Content="Save" HorizontalAlignment="Left"  Click="SaveBtn_Click"/>
-                </DockPanel>
-            </TabItem>
-            <TabItem Header="Hosts">
-                <usr:HostList VerticalAlignment="Top" HorizontalAlignment="Left"/>
-            </TabItem>
-            <TabItem Header="Charts">
-                <!--<local:Chart VerticalAlignment="Top" HorizontalAlignment="Left"/>-->
-            </TabItem>
-            <TabItem Header="Workers">
-                <usr:WorkerList VerticalAlignment="Top" HorizontalAlignment="Left"/>
-            </TabItem>
-            <TabItem Header="Measures">
-                <usr:MeasureList VerticalAlignment="Top" HorizontalAlignment="Left"/>
-            </TabItem>
-        </TabControl>
-    </Grid>
-</UserControl>
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+        xmlns:local="clr-namespace:CoAP_Analyzer_GUI"
+        xmlns:uc="clr-namespace:CoAP_Analyzer_GUI.UserControls"
+        xmlns:cm="clr-namespace:CoAP_Analyzer_Client.Models;assembly=CoAP-Analyzer-Client" 
+        xmlns:cmg="clr-namespace:CoAP_Analyzer_GUI.Models"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+        x:Class="CoAP_Analyzer_GUI.MainWindow" Height="600" Width="800">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type cm:HostListModel}">
+            <uc:HostList />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type cm:WorkerListModel}">
+            <uc:WorkerList />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type cm:MeasureListModel}">
+            <uc:MeasureList />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type cmg:ChartModel}">
+            <uc:Chart />
+        </DataTemplate>
+        
+        <LinearGradientBrush x:Key="LargeBackgroundHoverBrushKey" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0" Color="#FFFDDC" />
+            <GradientStop Offset="0.37" Color="#FFE796" />
+            <GradientStop Offset="0.38" Color="#FFD751" />
+            <GradientStop Offset="1" Color="#FFE799" />
+        </LinearGradientBrush>
 
-    
-<!--<Grid>
-    <Button x:Name="ClearhostField" Content="Clear" HorizontalAlignment="Left" Margin="420,521,0,0" VerticalAlignment="Top" Width="75" Height="25" Click="ClearhostField_Click" TabIndex="4"/>
-    <Button x:Name="StartBtn" Content="Start" HorizontalAlignment="Left" Margin="629,521,0,0" VerticalAlignment="Top" Width="75" Height="25" Click="StartBtn_Click" TabIndex="5" IsDefault="True"/>
-    
-    <Button x:Name="SaveBtn" Content="Save" HorizontalAlignment="Left" Margin="709,521,0,0" VerticalAlignment="Top" Width="75" Height="25" Click="SaveBtn_Click" TabIndex="5"/>
-</Grid>-->
+        <LinearGradientBrush x:Key="ControlOuterBorderHoverBrushKey" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0" Color="#DDCF9B" />
+            <GradientStop Offset="0.5" Color="#C1A877" />
+            <GradientStop Offset="1" Color="#D3CFBC" />
+        </LinearGradientBrush>
+
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="2,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="MouseEnter">
+                                <DoubleAnimation   
+                               Storyboard.TargetName="BdColor"    
+                               Storyboard.TargetProperty="Opacity"     
+                               From="0"
+                               To="1"                 
+                               Duration="0:0:.2"/>
+                            </Storyboard>
+                            <Storyboard x:Key="MouseLeave">
+                                <DoubleAnimation   
+                               Storyboard.TargetName="BdColor"    
+                               Storyboard.TargetProperty="Opacity"    
+                               From="1"
+                               To="0"                 
+                               Duration="0:0:.2"/>
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <Grid>
+                            <Border x:Name="BdColor" SnapsToDevicePixels="true" Opacity="0"
+                            BorderThickness="1" Margin="0" Padding="0" CornerRadius="1"
+                            Background="{DynamicResource LargeBackgroundHoverBrushKey}"
+                            BorderBrush="{DynamicResource ControlOuterBorderHoverBrushKey}"/>
+                            <Border x:Name="Bd" SnapsToDevicePixels="true"
+                            BorderThickness="1" Margin="0" Padding="0" CornerRadius="1">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource LargeBackgroundHoverBrushKey}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource ControlOuterBorderHoverBrushKey}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource MouseEnter}"/>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource MouseLeave}"/>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <!--<RowDefinition Height="25" />-->
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0">
+            <ListBox BorderThickness="0">
+                <ListBoxItem>
+                    <TextBlock x:Name="StartBtn" Text="Start" MouseLeftButtonDown="StartBtn_Click" Width="60"/>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <TextBlock x:Name="SaveBtn" Text="Save" MouseLeftButtonDown="SaveBtn_Click" Width="60" />
+                </ListBoxItem>
+            </ListBox>
+            <ListBox x:Name="ListBoxMenu" ItemsSource="{Binding Navigation}" BorderThickness="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <ContentControl Content="{Binding ElementName=ListBoxMenu, Path=SelectedItem}" />
+        </Grid>      
+    </Grid>
+</Window>
+    <!--
+    <StackPanel>
+    <Button x:Name="StartBtn" Content="Start" Click="StartBtn_Click" Width="70" HorizontalAlignment="Left" />
+    <Button x:Name="SaveBtn" Content="Save" Click="SaveBtn_Click" Width="70" HorizontalAlignment="Left" />
+    <TabControl Grid.Column="0">
+        <TabItem Header="Hosts">
+            <usr:HostList />
+        </TabItem>
+        <TabItem Header="Charts">
+            <usr:Chart />
+        </TabItem>
+        <TabItem Header="Workers">
+            <usr:WorkerList/>
+        </TabItem>
+        <TabItem Header="Measures">
+            <usr:MeasureList/>
+        </TabItem>
+    </TabControl>
+    </StackPanel>
+    <Frame Grid.Column="1">
+
+    </Frame>
+    -->

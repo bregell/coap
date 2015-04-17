@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
+using CoAP_Analyzer_Client;
 
 namespace CoAP_Analyzer_Client.Models
 {
-    public class MeasureModel : INotifyPropertyChanged
+    public class MeasureModel : BaseModel
     {
         #region Members
         Measure _measure;
@@ -90,26 +92,9 @@ namespace CoAP_Analyzer_Client.Models
             }
         }
         #endregion
-
-        #region INotifyPropertyChanged Members
-        public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
-
-        #region Methods
-        private void RaisePropertyChanged(string propertyName)
-        {
-            // take a copy to prevent thread issues
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        #endregion
-
     }
 
-    public class MeasureListModel : INotifyPropertyChanged
+    public class MeasureListModel : BaseModel, IEnumerable
     {
         #region Members
         ObservableCollection<MeasureModel> _measures;
@@ -118,7 +103,7 @@ namespace CoAP_Analyzer_Client.Models
         #region Construction
         public MeasureListModel()
         {
-            _measures = new ObservableCollection<MeasureModel>();
+            Measures = new ObservableCollection<MeasureModel>();
         }
         #endregion
 
@@ -135,22 +120,53 @@ namespace CoAP_Analyzer_Client.Models
                 RaisePropertyChanged("Measures");
             }
         }
-        #endregion
 
-        #region INotifyPropertyChanged Members
-        public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
-
-        #region Methods
-        private void RaisePropertyChanged(string propertyName)
+        public MeasureListModel Self
         {
-            // take a copy to prevent thread issues
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
+            get
             {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                return this;
             }
         }
         #endregion
+
+        #region IEnumerable Members
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return (IEnumerator)GetEnumerator();
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return new MeasureListModelEnum(_measures);
+        }
+        #endregion 
+    }
+
+    public class MeasureListModelEnum : IEnumerator
+    {
+        ObservableCollection<MeasureModel> _measures;
+        int position = -1;
+
+        public MeasureListModelEnum(ObservableCollection<MeasureModel> _m)
+        {
+            _measures = _m;
+        }
+
+        object IEnumerator.Current
+        {
+            get { return _measures[position]; }
+        }
+
+        bool IEnumerator.MoveNext()
+        {
+            position++;
+            return (position < _measures.Count);
+        }
+
+        void IEnumerator.Reset()
+        {
+            position = -1;
+        }
     }
 }

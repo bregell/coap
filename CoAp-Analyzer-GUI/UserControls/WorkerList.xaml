@@ -10,9 +10,9 @@
         <ListView x:Name="workerlist" ItemsSource="{Binding Workers}" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn DisplayMemberBinding="{Binding IP}" />
-                    <GridViewColumn DisplayMemberBinding="{Binding Rate}" />
+                    <GridViewColumn Header="Name"       DisplayMemberBinding="{Binding MethodName}" />
+                    <GridViewColumn Header="IP"         DisplayMemberBinding="{Binding IP}" />
+                    <GridViewColumn Header="Rate(ms)"   DisplayMemberBinding="{Binding Rate}" />
                 </GridView>
             </ListView.View>
         </ListView>

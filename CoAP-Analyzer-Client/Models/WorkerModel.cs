@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CoAP_Analyzer_Client;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
 
 namespace CoAP_Analyzer_Client.Models
 {
-    public class WorkerModel : INotifyPropertyChanged
+    public class WorkerModel : BaseModel
     {
         #region Members
         Worker _worker;
@@ -24,7 +25,9 @@ namespace CoAP_Analyzer_Client.Models
             }
         }
 
-        public string Name
+        //public override string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
+
+        public string MethodName
         {
             get
             {
@@ -63,25 +66,9 @@ namespace CoAP_Analyzer_Client.Models
             _worker = new Worker(host, f, r, param);
         }
         #endregion
-
-        #region INotifyPropertyChanged Members
-        public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
-
-        #region Methods
-        private void RaisePropertyChanged(string propertyName)
-        {
-            // take a copy to prevent thread issues
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        #endregion
     }
 
-    public class WorkerListModel
+    public class WorkerListModel : BaseModel
     {
         #region Members
         ObservableCollection<WorkerModel> _workers;
@@ -104,6 +91,7 @@ namespace CoAP_Analyzer_Client.Models
             set
             {
                 _workers = value;
+                RaisePropertyChanged("Workers");
             }
         }
         #endregion
