@@ -1,5 +1,6 @@
 ﻿using CoAP_Analyzer_Client;
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
@@ -22,10 +23,9 @@ namespace CoAP_Analyzer_Client.Models
             set
             {
                 _worker = value;
+                RaisePropertyChanged("Worker");
             }
         }
-
-        //public override string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
 
         public string MethodName
         {
@@ -41,6 +41,11 @@ namespace CoAP_Analyzer_Client.Models
             {
                 return _worker.Host.IP;
             }
+            set
+            {
+                _worker.Host.IP = value;
+                RaisePropertyChanged("IP");
+            }
         }
 
         public int Rate
@@ -48,6 +53,11 @@ namespace CoAP_Analyzer_Client.Models
             get
             {
                 return _worker.Rate;
+            }
+            set
+            {
+                _worker.Rate = value;
+                RaisePropertyChanged("Rate");
             }
         }
 
@@ -63,12 +73,12 @@ namespace CoAP_Analyzer_Client.Models
         #region Construction
         public WorkerModel(Host host, Func<int, Measure> f, int r, int param)
         {
-            _worker = new Worker(host, f, r, param);
+            Worker = new Worker(host, f, r, param);
         }
         #endregion
     }
 
-    public class WorkerListModel : BaseModel
+    public class WorkerListModel : BaseModel, IEnumerable
     {
         #region Members
         ObservableCollection<WorkerModel> _workers;
@@ -95,5 +105,17 @@ namespace CoAP_Analyzer_Client.Models
             }
         }
         #endregion
+
+        #region IEnumerable Members
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return (IEnumerator)GetEnumerator();
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return new ListEnum<WorkerModel>(_workers);
+        }
+        #endregion 
     }
 }

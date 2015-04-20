@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Collections.Specialized;
 using CoAP_Analyzer_Client.Models;
 
 namespace CoAP_Analyzer_GUI.UserControls
@@ -31,31 +32,15 @@ namespace CoAP_Analyzer_GUI.UserControls
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             WorkerModel w = (WorkerModel)(workerlist.SelectedItem);
-            SharedData._measureList.Measures.CollectionChanged -= Measures_CollectionChanged;
-            SharedData._cm.ClearModel();
             try
             {
                 SharedData._measureList.Measures = w.Worker.Measures;
-                SharedData._cm.UpdateModel(SharedData._cm.LineSeries[0], SharedData._measureList.Measures);
-                SharedData._measureList.Measures.CollectionChanged += Measures_CollectionChanged;
+
             }
             catch (Exception)
             {
                 
             }  
-        }
-
-        void Measures_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            Application.Current.Dispatcher.Invoke((Action)delegate
-            {
-                ObservableCollection<MeasureModel> _mm = new ObservableCollection<MeasureModel>();
-                foreach(object _m in e.NewItems){
-                    _mm.Add((MeasureModel)_m);  
-                }
-                SharedData._cm.UpdateModel(SharedData._cm.LineSeries[0] ,_mm);
-                SharedData._cm.Model.InvalidatePlot(true);
-            });
         }
     }
 }

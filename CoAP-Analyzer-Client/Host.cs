@@ -6,6 +6,7 @@ using System.Net;
 using System.Diagnostics;
 using CoAP;
 using CoAP.Net;
+using CoAP_Analyzer_Client.Models;
 
 namespace CoAP_Analyzer_Client
 {
@@ -29,6 +30,8 @@ namespace CoAP_Analyzer_Client
                 this._ip = value;
             }
         }
+
+        public bool Running { get; set; }
         #endregion
 
         #region Construction
@@ -40,6 +43,7 @@ namespace CoAP_Analyzer_Client
             _conf.MaxMessageSize = 32;
             _endpoint = new CoAPEndPoint(_conf);
             _endpoint.Start();
+            Running = false;
         }
 
         public Host()
@@ -49,6 +53,7 @@ namespace CoAP_Analyzer_Client
             _conf.MaxMessageSize = 32;
             _endpoint = new CoAPEndPoint(_conf);
             _endpoint.Start();
+            Running = false;
         }
         #endregion
 

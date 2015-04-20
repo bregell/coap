@@ -72,6 +72,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="UserControls\ChartCreation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\HostList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -85,6 +89,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\ChartModel.cs" />
+    <Compile Include="UserControls\ChartCreation.xaml.cs">
+      <DependentUpon>ChartCreation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\HostList.xaml.cs">
       <DependentUpon>HostList.xaml</DependentUpon>
     </Compile>

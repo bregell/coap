@@ -120,14 +120,6 @@ namespace CoAP_Analyzer_Client.Models
                 RaisePropertyChanged("Measures");
             }
         }
-
-        public MeasureListModel Self
-        {
-            get
-            {
-                return this;
-            }
-        }
         #endregion
 
         #region IEnumerable Members
@@ -138,35 +130,8 @@ namespace CoAP_Analyzer_Client.Models
 
         public IEnumerator GetEnumerator()
         {
-            return new MeasureListModelEnum(_measures);
+            return new ListEnum<MeasureModel>(_measures);
         }
         #endregion 
-    }
-
-    public class MeasureListModelEnum : IEnumerator
-    {
-        ObservableCollection<MeasureModel> _measures;
-        int position = -1;
-
-        public MeasureListModelEnum(ObservableCollection<MeasureModel> _m)
-        {
-            _measures = _m;
-        }
-
-        object IEnumerator.Current
-        {
-            get { return _measures[position]; }
-        }
-
-        bool IEnumerator.MoveNext()
-        {
-            position++;
-            return (position < _measures.Count);
-        }
-
-        void IEnumerator.Reset()
-        {
-            position = -1;
-        }
     }
 }

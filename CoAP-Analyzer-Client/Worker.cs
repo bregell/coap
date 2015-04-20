@@ -102,6 +102,14 @@ namespace CoAP_Analyzer_Client
                 _measures = value;
             }
         }
+
+        public bool Running
+        {
+            get
+            {
+                return !_shouldPause;
+            }
+        }
         #endregion
 
         #region Methods

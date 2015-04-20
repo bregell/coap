@@ -42,12 +42,9 @@ namespace CoAP_Analyzer_GUI.UserControls
         {
             try
             {
-
                 HostModel h = (HostModel)List.SelectedItem;
-                NewHostBox.Text = h.IP.ToString();
-                NewRateBox.Text = h.Rate.ToString();
-                AddHost.Content = "Remove";
-
+                NewHostBox.Text = "["+h.IP.ToString()+"]";
+                NewRateBox.Text = (h.Rate/1000).ToString();
             }
             catch (Exception)
             {
@@ -57,41 +54,33 @@ namespace CoAP_Analyzer_GUI.UserControls
 
         private void AddHost_Click(object sender, RoutedEventArgs e)
         {
-            if (AddHost.Content.ToString() == "Add Host")
+            try
             {
-                try
+                HostModel host = SharedData._hostList.Hosts.SingleOrDefault(h => h.IP.Equals(IPAddress.Parse(NewHostBox.Text)));
+                if (host == null)
                 {
-                    HostModel host = SharedData._hostList.Hosts.FirstOrDefault(h => h.IP == IPAddress.Parse(NewHostBox.Text));
-                    if (host == null)
-                    {
-                        host = new HostModel();
-                        host.IP = IPAddress.Parse(NewHostBox.Text);
-                        host.Rate = Convert.ToInt32(NewRateBox.Text) * 1000;
-                        createWorkers(host);
-                        SharedData._hostList.Hosts.Add(host);
-                        NewHostBox.Text = "";
-                    }
+                    host = new HostModel();
+                    host.IP = IPAddress.Parse(NewHostBox.Text);
+                    host.Rate = Convert.ToInt32(NewRateBox.Text) * 1000;
+                    createWorkers(host);
+                    SharedData._hostList.Hosts.Add(host);
+                    NewHostBox.Text = "";
                 }
-                catch (Exception)
+                else
                 {
-
+                    host.IP = IPAddress.Parse(NewHostBox.Text);
+                    host.Rate = Convert.ToInt32(NewRateBox.Text) * 1000;
+                    foreach(WorkerModel _wm in SharedData._workerList.Workers.ToList().FindAll(h => h.IP.Equals(host.IP)))
+                    {
+                        _wm.Rate = host.Rate;
+                        _wm.IP = host.IP;
+                    }
+                    NewHostBox.Text = "";
                 }
             }
-            else if (AddHost.Content.ToString() == "Remove")
+            catch (Exception)
             {
-                try
-                {
-                    HostModel host = SharedData._hostList.Hosts.First(_host => _host.IP.ToString() == NewHostBox.Text);
-                    SharedData._hostList.Hosts.Remove(host);
-                    removeWorkers(host);
-                    NewHostBox.Text = "";
-                    NewRateBox.Text = "";
-                    AddHost.Content = "Add Host";
-                }
-                catch (Exception)
-                {
 
-                }
             }
         }
 
@@ -99,7 +88,6 @@ namespace CoAP_Analyzer_GUI.UserControls
         {
             NewHostBox.Text = "";
             NewRateBox.Text = "";
-            AddHost.Content = "Add Host";
         }
 
         private void createWorkers(HostModel hwm)
@@ -126,16 +114,71 @@ namespace CoAP_Analyzer_GUI.UserControls
                 }
             }
             _wlm.Workers.ToList().ForEach(x => SharedData._workerList.Workers.Add(x));
+            hwm.Host.Running = false;
         }
 
         private void removeWorkers(HostModel hwm)
         {
-            List<WorkerModel> _wl = SharedData._workerList.Workers.ToList().FindAll(x => x.Worker.Host.IP.ToString() == hwm.IP.ToString());
+            List<WorkerModel> _wl = SharedData._workerList.Workers.ToList().FindAll(x => x.Worker.Host.IP.Equals(hwm.IP));
             foreach (WorkerModel _w in _wl)
             {
                 _w.Worker.Stop();
+                _w.Worker.Host.Running = false;
                 SharedData._removedWorkers.Add(_w.Worker);
                 SharedData._workerList.Workers.Remove(_w);
+            }
+        }
+
+        private void Remove_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                HostModel host = SharedData._hostList.Hosts.SingleOrDefault(h => h.IP.Equals(IPAddress.Parse(Selected.Text)));
+                SharedData._hostList.Hosts.Remove(host);
+                removeWorkers(host);
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void Start_Stop_Click(object sender, RoutedEventArgs e)
+        {
+            try{
+                HostModel _host = SharedData._hostList.Hosts.SingleOrDefault(h => h.IP.Equals(IPAddress.Parse(Selected.Text)));               
+                foreach (WorkerModel _wm in SharedData._workerList)
+                {
+                    if (_wm.IP.Equals(_host.IP))
+                    {
+                       
+                        if (_host.Host.Running){    
+                            _wm.Worker.Pause();
+                        } else {
+                            _wm.Worker.Run();
+                        }
+                    }
+                }
+                if (_host.Host.Running){
+                    _host.Host.Running = false;
+                }  else {
+                    _host.Host.Running = true;
+                }
+            } catch (Exception){
+
+            }
+        }
+
+        private void List_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Selected.Text = "[" + ((HostModel)List.SelectedItem).IP.ToString() + "]";
+            if (((HostModel)List.SelectedItem).Host.Running)
+            {
+                Start_Stop.Content = "Stop";
+            }
+            else
+            {
+                Start_Stop.Content = "Start";
             }
         }
     }

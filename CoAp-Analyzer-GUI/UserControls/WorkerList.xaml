@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <ListView x:Name="workerlist" ItemsSource="{Binding Workers}" MouseDoubleClick="ListView_MouseDoubleClick">
+        <ListView x:Name="workerlist" ItemsSource="{Binding Workers}" MouseDoubleClick="ListView_MouseDoubleClick" BorderThickness="0">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name"       DisplayMemberBinding="{Binding MethodName}" />

@@ -30,8 +30,7 @@ namespace CoAP_Analyzer_GUI.UserControls
         public Chart()
         {
             InitializeComponent();
-            this.DataContext = SharedData._cm;
-             
+            //this.DataContext = SharedData._chartList[0];  
         }
     }
     //SharedData._measureList.Measures.Clear();

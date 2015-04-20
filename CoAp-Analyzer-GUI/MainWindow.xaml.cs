@@ -20,19 +20,22 @@ using CoAP.Log;
 using System.ComponentModel;
 using System.Diagnostics;
 using CoAP_Analyzer_GUI.Models;
+using CoAP_Analyzer_GUI.UserControls;
 
 namespace CoAP_Analyzer_GUI
 {
 
     public static class SharedData
     {
-        public static HostListModel _hostList = new HostListModel();
-        public static WorkerListModel _workerList = new WorkerListModel();
-        public static MeasureListModel _measureList = new MeasureListModel();
+        public static MainWindowModel _mwm = new MainWindowModel();
+        public static HostListModel _hostList = new HostListModel(){ Name = "_Hosts", Command = new RelayCommand(param => _command(SharedData._hostList), param => true) };
+        public static WorkerListModel _workerList = new WorkerListModel() { Name="_Workers", Command = new RelayCommand(param => _command(SharedData._workerList), param => true) };
+        public static MeasureListModel _measureList = new MeasureListModel() { Name="_Measures", Command = new RelayCommand(param => _command(SharedData._measureList), param => true) }; 
+        public static ChartListModel _chartList = new ChartListModel() { Name="_Create Chart", Command = new RelayCommand(param => _command(SharedData._chartList), param => true) };
+        public static Action<object> _command;
         public static List<Worker> _removedWorkers = new List<Worker>();
         public static List<Thread> _threads = new List<Thread>();
         public static bool _running = false;
-        public static ChartModel _cm = new ChartModel();
     }
 
     /// <summary>
@@ -40,38 +43,50 @@ namespace CoAP_Analyzer_GUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        MainWindowModel _mwm;
+        MainWindowModel _mwm = SharedData._mwm;
         public MainWindow()
         {
+            SharedData._command = ChangeView;
+            _mwm.addNavigation(SharedData._hostList); // Workers = SharedData._workerList.Workers 
+            _mwm.addNavigation(SharedData._workerList); //Hosts = SharedData._hostList.Hosts
+            _mwm.addNavigation(SharedData._measureList); //Measures = SharedData._measureList.Measures
+            _mwm.addNavigation(SharedData._chartList);
+            this.DataContext = _mwm;
             InitializeComponent();
-            _mwm = new MainWindowModel();
-            _mwm.addNavigation(new HostListModel() { Name = "Hosts" }); // Workers = SharedData._workerList.Workers 
-            _mwm.addNavigation(new WorkerListModel() { Name = "Workers" }); //Hosts = SharedData._hostList.Hosts
-            _mwm.addNavigation(new MeasureListModel() { Name = "Measures" }); //Measures = SharedData._measureList.Measures
-            _mwm.addNavigation(new ChartModel() { Name = "Charts" });
-            this.DataContext = _mwm;     
+            
+        }
+
+        private void ChangeView(object sender)
+        {
+            GridContent.Content = sender;
+        }
+
+        private bool CanExe
+        {
+            get { return true; }   
         }
 
         private void StartBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (StartBtn.Text.ToString() == "Start")
-            {
+            if(!SharedData._running){
                 foreach (WorkerModel w in SharedData._workerList.Workers)
                 {
                     w.Worker.Run();
+                    w.Worker.Host.Running = true;
                 }
                 SharedData._running = true;
-                StartBtn.Text = "Pause";
+                ((Button)sender).Content = "Stop";
             }
-            else if (StartBtn.Text.ToString() == "Pause")
+            else
             {
                 foreach (WorkerModel w in SharedData._workerList.Workers)
                 {
 
                     w.Worker.Pause();
+                    w.Worker.Host.Running = false;
                 }
                 SharedData._running = false;
-                StartBtn.Text = "Start";
+                ((Button)sender).Content = "_Start";
             } 
         }
 
