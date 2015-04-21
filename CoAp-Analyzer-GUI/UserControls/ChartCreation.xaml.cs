@@ -23,13 +23,13 @@ namespace CoAP_Analyzer_GUI.UserControls
     /// </summary>
     public partial class ChartCreation : UserControl
     {
-        ChartListModel _clm;
-        ChartModel _cm;
+        static ChartCreateModel _clm;
+        static ChartModel _cm;
+
         public ChartCreation()
-        {
+        {  
             InitializeComponent();
-            DataContext = SharedData._chartList;
-            _clm = SharedData._chartList;
+            _clm = SharedData._chartTab.CreateModel;
             _cm = _clm.Chart;
         }
 
@@ -50,19 +50,30 @@ namespace CoAP_Analyzer_GUI.UserControls
             foreach (object _obj in e.RemovedItems)
             {
                 WorkerModel _wm = ((WorkerModel)_obj);
-                if (!_cm.Series.Any(x => x.Item3.Equals(_wm.Measure)))
+                if (_cm.Series.Any(x => x.Item3.Equals(_wm.Measure)))
                 {
                     _clm.Chart.RemoveSeries(_wm);
                 }
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Save_Click(object sender, RoutedEventArgs e)
         {
+            _clm.Chart.Name = _clm.Chart.Model.Title;
             _clm.Charts.Add(_clm.Chart);
             _clm.addNavigation(_clm.Chart);
+            _clm.Chart.Controls = Visibility.Visible;
             _clm.Chart = new ChartModel();
-            _clm.Chart.Name = "New Chart";
+        }
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            _clm.Chart = new ChartModel();
+        }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            _clm.Chart.RefreshPlot();
         }
     }
 }

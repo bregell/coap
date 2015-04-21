@@ -30,8 +30,8 @@ namespace CoAP_Analyzer_GUI
         public static MainWindowModel _mwm = new MainWindowModel();
         public static HostListModel _hostList = new HostListModel(){ Name = "_Hosts", Command = new RelayCommand(param => _command(SharedData._hostList), param => true) };
         public static WorkerListModel _workerList = new WorkerListModel() { Name="_Workers", Command = new RelayCommand(param => _command(SharedData._workerList), param => true) };
-        public static MeasureListModel _measureList = new MeasureListModel() { Name="_Measures", Command = new RelayCommand(param => _command(SharedData._measureList), param => true) }; 
-        public static ChartListModel _chartList = new ChartListModel() { Name="_Create Chart", Command = new RelayCommand(param => _command(SharedData._chartList), param => true) };
+        public static MeasureListModel _measureList = new MeasureListModel() { Name="_Measures", Command = new RelayCommand(param => _command(SharedData._measureList), param => true) };
+        public static ChartTabModel _chartTab = new ChartTabModel() { Name = "_Charts", Command = new RelayCommand(param => _command(SharedData._chartTab), param => true) };
         public static Action<object> _command;
         public static List<Worker> _removedWorkers = new List<Worker>();
         public static List<Thread> _threads = new List<Thread>();
@@ -50,20 +50,16 @@ namespace CoAP_Analyzer_GUI
             _mwm.addNavigation(SharedData._hostList); // Workers = SharedData._workerList.Workers 
             _mwm.addNavigation(SharedData._workerList); //Hosts = SharedData._hostList.Hosts
             _mwm.addNavigation(SharedData._measureList); //Measures = SharedData._measureList.Measures
-            _mwm.addNavigation(SharedData._chartList);
+            _mwm.addNavigation(SharedData._chartTab);
             this.DataContext = _mwm;
             InitializeComponent();
+            GridContent.Content = SharedData._hostList;
             
         }
 
         private void ChangeView(object sender)
         {
             GridContent.Content = sender;
-        }
-
-        private bool CanExe
-        {
-            get { return true; }   
         }
 
         private void StartBtn_Click(object sender, RoutedEventArgs e)

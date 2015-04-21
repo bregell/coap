@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="300" d:DesignWidth="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
@@ -12,29 +12,34 @@
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
+
+            <ColumnDefinition Width="264" />
             <ColumnDefinition Width="140" />
+            <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <ListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="List" ItemsSource="{Binding Hosts}" SelectionChanged="List_SelectionChanged" MouseDoubleClick="List_MouseDoubleClick" BorderThickness="0">
+        <ListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" x:Name="List" ItemsSource="{Binding Hosts}" BorderThickness="0"
+                  SelectionChanged="List_SelectionChanged" 
+                  MouseDoubleClick="List_MouseDoubleClick" 
+                  KeyUp="List_KeyUp">
             <ListView.View>
                 <GridView AllowsColumnReorder="True">
-                    <GridViewColumn Header="Host IP" DisplayMemberBinding="{Binding IP}" Width="200"/>
-                    <GridViewColumn Header="Rate(ms)" DisplayMemberBinding="{Binding Rate}" Width="100"/>
+                    <GridViewColumn Header="Host IP" DisplayMemberBinding="{Binding Path=IP}" Width="200"/>
+                    <GridViewColumn Header="Rate(ms)" DisplayMemberBinding="{Binding Path=Rate}" Width="100"/>
+                    <GridViewColumn Header="Running" DisplayMemberBinding="{Binding Path=Running}" Width="100"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBlock x:Name="Selected" Grid.Row="1" Grid.Column="0" />
         <DockPanel Grid.Row="1" Grid.Column="1">
-            <Button x:Name="Start_Stop" Content="Start" Width="70" Click="Start_Stop_Click" HorizontalAlignment="Left" />
-            <Button x:Name="Remove" Content="Remove" Width="70" Click="Remove_Click" HorizontalAlignment="Left" />
+            <Button x:Name="Start_Stop" Content="Start" Width="70" Click="Start_Stop_Click" HorizontalAlignment="Left" Margin="0,0,2,0"/>
+            <Button x:Name="Remove" Content="Remove" Width="70" Click="Remove_Click" HorizontalAlignment="Left" Margin="0,0,2,0"/>
         </DockPanel>
         <DockPanel Grid.Row="2" Grid.Column="0">
-            <TextBox x:Name="NewHostBox" ToolTip="IPv6 Address" Width="215" HorizontalAlignment="Left" />
-            <TextBox x:Name="NewRateBox" ToolTip="Rate(Seconds)" Width="35" HorizontalAlignment="Left" Margin="5,0,0,0" Padding="0" />
+            <TextBox x:Name="NewHostBox" ToolTip="IPv6 Address" Width="220" HorizontalAlignment="Left" Margin="0,0,2,0"/>
+            <TextBox x:Name="NewRateBox" ToolTip="Rate(Seconds)" Width="40" HorizontalAlignment="Left" Margin="0,0,2,0" />
         </DockPanel>
         <DockPanel Grid.Row="2" Grid.Column="1">
-            <Button x:Name="AddHost" Content="Add" Width="70" Click="AddHost_Click" HorizontalAlignment="Left" />
-            <Button x:Name="ClearHost" Content="Clear" Width="70" Click="ClearHost_Click" HorizontalAlignment="Left" />
+            <Button x:Name="AddHost" Content="Add" Width="70" Click="AddHost_Click" HorizontalAlignment="Left" Margin="0,0,2,0" />
+            <Button x:Name="ClearHost" Content="Clear" Width="70" Click="ClearHost_Click" HorizontalAlignment="Left" Margin="0,0,2,0"/>
         </DockPanel>
     </Grid>
 </UserControl>

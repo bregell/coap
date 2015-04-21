@@ -14,7 +14,7 @@ namespace CoAP_Analyzer_Client.Models
 {
     public class HostModel : BaseModel
     {
-        #region members
+        #region Members
         Host _host;
         int _rate;
         #endregion
@@ -67,6 +67,20 @@ namespace CoAP_Analyzer_Client.Models
             {
                 _rate = value;
                 RaisePropertyChanged("Rate");
+            }
+        }
+
+        public bool Running
+        {
+            get
+            {
+                return _host.Running;
+
+            }
+            set
+            {
+                _host.Running = value;
+                RaisePropertyChanged("Running");
             }
         }
         #endregion

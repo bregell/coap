@@ -120,6 +120,14 @@ namespace CoAP_Analyzer_Client.Models
                 RaisePropertyChanged("Measures");
             }
         }
+
+        public string Unit
+        {
+            get
+            {
+                return Measures.Count != 0 ? Measures[0].Unit : "Unit";
+            }
+        }
         #endregion
 
         #region IEnumerable Members

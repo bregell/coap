@@ -19,6 +19,8 @@ using OxyPlot.Series;
 using System.ComponentModel;
 using CoAP_Analyzer_Client;
 using CoAP_Analyzer_Client.Models;
+using CoAP_Analyzer_GUI.Models;
+using System.Collections.Specialized;
 
 namespace CoAP_Analyzer_GUI.UserControls
 {
@@ -30,7 +32,30 @@ namespace CoAP_Analyzer_GUI.UserControls
         public Chart()
         {
             InitializeComponent();
-            //this.DataContext = SharedData._chartList[0];  
+        }
+
+        private void save_Click(object sender, RoutedEventArgs e)
+        {
+            ChartModel _cm = (ChartModel)DataContext;
+            //SaveFileDialog _sfd = new SaveFileDialog();
+            //_sfd.InitialDirectory = "%userprofile%/desktop";
+            //_sfd.ShowDialog(SharedData._mwm);
+            ObservableCollection<MeasureModel> _mm = new ObservableCollection<MeasureModel>();
+            foreach(Tuple<LineSeries, NotifyCollectionChangedEventHandler, ObservableCollection<MeasureModel>> _tuple in _cm.Series){
+                _mm.Concat(_tuple.Item3);
+            }
+            //TODO
+            //Program.saveToFile(, _sfd.FileName);
+        }
+
+        private void modify_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void delete_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
     //SharedData._measureList.Measures.Clear();

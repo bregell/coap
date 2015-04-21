@@ -27,15 +27,6 @@ namespace CoAP_Analyzer_GUI.UserControls
         public HostList()
         {
             InitializeComponent();
-
-            /*SharedData._hostList.Hosts = new ObservableCollection<HostViewModel>{
-                new HostViewModel(IPAddress.Parse("[aaaa::212:4b00:60d:9abb]")), 
-                new HostViewModel(IPAddress.Parse("[aaaa::212:4b00:60d:9ac3]")),
-                new HostViewModel(IPAddress.Parse("[aaaa::212:4b00:60d:9b57]")), 
-                new HostViewModel(IPAddress.Parse("[aaaa::212:4b00:60d:9b59]"))
-            };*/
-
-            this.DataContext = SharedData._hostList;
         }
 
         private void List_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -133,7 +124,7 @@ namespace CoAP_Analyzer_GUI.UserControls
         {
             try
             {
-                HostModel host = SharedData._hostList.Hosts.SingleOrDefault(h => h.IP.Equals(IPAddress.Parse(Selected.Text)));
+                HostModel host = SharedData._hostList.Hosts.SingleOrDefault(h => h.IP.Equals(((HostModel)List.SelectedItem).IP));
                 SharedData._hostList.Hosts.Remove(host);
                 removeWorkers(host);
             }
@@ -146,23 +137,25 @@ namespace CoAP_Analyzer_GUI.UserControls
         private void Start_Stop_Click(object sender, RoutedEventArgs e)
         {
             try{
-                HostModel _host = SharedData._hostList.Hosts.SingleOrDefault(h => h.IP.Equals(IPAddress.Parse(Selected.Text)));               
+                HostModel _host = SharedData._hostList.Hosts.SingleOrDefault(h => h.IP.Equals(((HostModel)List.SelectedItem).IP));               
                 foreach (WorkerModel _wm in SharedData._workerList)
                 {
                     if (_wm.IP.Equals(_host.IP))
                     {
                        
-                        if (_host.Host.Running){    
+                        if (_host.Running){    
                             _wm.Worker.Pause();
                         } else {
                             _wm.Worker.Run();
                         }
                     }
                 }
-                if (_host.Host.Running){
-                    _host.Host.Running = false;
+                if (_host.Running){
+                    _host.Running = false;
+                    ((Button)sender).Content = "Start";
                 }  else {
-                    _host.Host.Running = true;
+                    _host.Running = true;
+                    ((Button)sender).Content = "Stop";
                 }
             } catch (Exception){
 
@@ -171,14 +164,24 @@ namespace CoAP_Analyzer_GUI.UserControls
 
         private void List_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Selected.Text = "[" + ((HostModel)List.SelectedItem).IP.ToString() + "]";
-            if (((HostModel)List.SelectedItem).Host.Running)
+            if (List.SelectedItem != null)
             {
-                Start_Stop.Content = "Stop";
+                if (((HostModel)List.SelectedItem).Running)
+                {
+                    Start_Stop.Content = "Stop";
+                }
+                else
+                {
+                    Start_Stop.Content = "Start";
+                }
             }
-            else
+        }
+
+        private void List_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key.Equals(Key.Enter))
             {
-                Start_Stop.Content = "Start";
+                Start_Stop_Click(Start_Stop, new RoutedEventArgs());
             }
         }
     }

@@ -9,10 +9,10 @@
         <ListView ItemsSource="{Binding Measures}" BorderThickness="0">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Time}" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding IP}" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Value}" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Unit}" Width="Auto"/>
+                    <GridViewColumn Header="Timestamp" DisplayMemberBinding="{Binding Path=Time}" Width="Auto"/>
+                    <GridViewColumn Header="IP Address" DisplayMemberBinding="{Binding Path=IP}" Width="Auto"/>
+                    <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Path=Value}" Width="Auto"/>
+                    <GridViewColumn Header="{Binding Unit}" DisplayMemberBinding="{Binding Path=Unit}" Width="Auto"/>
                 </GridView>
             </ListView.View>
         </ListView>

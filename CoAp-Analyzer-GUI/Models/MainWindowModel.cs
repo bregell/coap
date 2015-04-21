@@ -14,9 +14,6 @@ namespace CoAP_Analyzer_GUI.Models
 {
     public class MainWindowModel : BaseModel
     {
-        #region Members
-        #endregion
-
         public MainWindowModel()
         {
             Navigation = new ObservableCollection<BaseModel>();

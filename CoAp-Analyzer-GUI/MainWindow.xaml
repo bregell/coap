@@ -19,7 +19,10 @@
         <DataTemplate DataType="{x:Type cm:MeasureListModel}">
             <uc:MeasureList />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type cmg:ChartListModel}">
+        <DataTemplate DataType="{x:Type cmg:ChartTabModel}">
+            <uc:ChartTab />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type cmg:ChartCreateModel}">
             <uc:ChartCreation />
         </DataTemplate>
         <DataTemplate DataType="{x:Type cmg:ChartModel}">
@@ -28,163 +31,31 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="70" />
+            <ColumnDefinition Width="100" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0">  
-            <Menu x:Name="Menu" IsMainMenu="true" ItemsSource="{Binding Navigation}">
+            <Menu x:Name="Menu" ItemsSource="{Binding Navigation}" Background="White" >
                 <Menu.ItemContainerStyle>
                     <Style>
                         <Setter Property="MenuItem.Header" Value="{Binding Path=Name}" />
+                        <Setter Property="MenuItem.HeaderStringFormat" Value="" />
                         <Setter Property="MenuItem.Command" Value="{Binding Path=Command}" />
                         <Setter Property="MenuItem.CommandParameter" Value="{Binding}" />
-                        <Setter Property="MenuItem.ItemsSource" Value="{Binding Path=Navigation}" />
+                        <Setter Property="MenuItem.HorizontalContentAlignment" Value="Center" />
                     </Style>
                 </Menu.ItemContainerStyle>
             </Menu>
             <Menu>
                 <Separator />
-                <!--<MenuItem x:Name="StartBtn" Header="_Start" Click="StartBtn_Click" />-->
                 <MenuItem x:Name="SaveBtn" Header="_Save" Click="SaveBtn_Click" />
             </Menu>
         </StackPanel>
         <Grid x:Name="MainGrid" Grid.Column="1">
-            <ContentControl x:Name="GridContent" Content="{Binding SelectedPage}"/>
+            <ContentControl x:Name="GridContent"/>
         </Grid>
     </Grid>
 </Window>
-    <!--
-    <ListBox x:Name="ListBoxMenu" ItemsSource="{Binding Navigation}" BorderThickness="0">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock  Text="{Binding Name}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-    
-    <ListBox BorderThickness="0">
-                <ListBoxItem>
-                    <TextBlock x:Name="StartBtn" Text="Start" MouseLeftButtonDown="StartBtn_Click" Width="60"/>
-                </ListBoxItem>
-                <ListBoxItem>
-                    <TextBlock x:Name="SaveBtn" Text="Save" MouseLeftButtonDown="SaveBtn_Click" Width="60" />
-                </ListBoxItem>
-            </ListBox>
-    
-    <MenuItem Header="_Edit">
-                    <MenuItem Command="ApplicationCommands.Copy"/>
-                    <MenuItem Command="ApplicationCommands.Cut"/>
-                    <MenuItem Command="ApplicationCommands.Paste"/>
-                </MenuItem>
-                <MenuItem Header="_Font">
-                    <MenuItem Header="_Bold" IsCheckable="True"
-              Checked="Bold_Checked"
-              Unchecked="Bold_Unchecked"/>
-                    <MenuItem Header="_Italic" IsCheckable="True"
-              Checked="Italic_Checked"
-              Unchecked="Italic_Unchecked"/>
-                    <Separator/>
-                    <MenuItem Header="I_ncrease Font Size"
-              Click="IncreaseFont_Click"/>
-                    <MenuItem Header="_Decrease Font Size"
-              Click="DecreaseFont_Click"/>
-                </MenuItem>
-            </Menu>
-    
-    <StackPanel>
-    <Button x:Name="StartBtn" Content="Start" Click="StartBtn_Click" Width="70" HorizontalAlignment="Left" />
-    <Button x:Name="SaveBtn" Content="Save" Click="SaveBtn_Click" Width="70" HorizontalAlignment="Left" />
-    <TabControl Grid.Column="0">
-        <TabItem Header="Hosts">
-            <usr:HostList />
-        </TabItem>
-        <TabItem Header="Charts">
-            <usr:Chart />
-        </TabItem>
-        <TabItem Header="Workers">
-            <usr:WorkerList/>
-        </TabItem>
-        <TabItem Header="Measures">
-            <usr:MeasureList/>
-        </TabItem>
-    </TabControl>
-    </StackPanel>
-    <Frame Grid.Column="1">
-
-    </Frame>
-    
-    
-    <LinearGradientBrush x:Key="LargeBackgroundHoverBrushKey" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Offset="0" Color="#FFFDDC" />
-            <GradientStop Offset="0.37" Color="#FFE796" />
-            <GradientStop Offset="0.38" Color="#FFD751" />
-            <GradientStop Offset="1" Color="#FFE799" />
-        </LinearGradientBrush>
-
-        <LinearGradientBrush x:Key="ControlOuterBorderHoverBrushKey" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Offset="0" Color="#DDCF9B" />
-            <GradientStop Offset="0.5" Color="#C1A877" />
-            <GradientStop Offset="1" Color="#D3CFBC" />
-        </LinearGradientBrush>
-
-        <Style TargetType="{x:Type ListBoxItem}">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-            <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-            <Setter Property="Padding" Value="2,0,0,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="MouseEnter">
-                                <DoubleAnimation   
-                               Storyboard.TargetName="BdColor"    
-                               Storyboard.TargetProperty="Opacity"     
-                               From="0"
-                               To="1"                 
-                               Duration="0:0:.2"/>
-                            </Storyboard>
-                            <Storyboard x:Key="MouseLeave">
-                                <DoubleAnimation   
-                               Storyboard.TargetName="BdColor"    
-                               Storyboard.TargetProperty="Opacity"    
-                               From="1"
-                               To="0"                 
-                               Duration="0:0:.2"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
-                        <Grid>
-                            <Border x:Name="BdColor" SnapsToDevicePixels="true" Opacity="0"
-                            BorderThickness="1" Margin="0" Padding="0" CornerRadius="1"
-                            Background="{DynamicResource LargeBackgroundHoverBrushKey}"
-                            BorderBrush="{DynamicResource ControlOuterBorderHoverBrushKey}"/>
-                            <Border x:Name="Bd" SnapsToDevicePixels="true"
-                            BorderThickness="1" Margin="0" Padding="0" CornerRadius="1">
-                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                            </Border>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource LargeBackgroundHoverBrushKey}"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="{DynamicResource ControlOuterBorderHoverBrushKey}"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource MouseEnter}"/>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource MouseLeave}"/>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    -->

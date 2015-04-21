@@ -22,6 +22,7 @@ namespace CoAP_Analyzer_GUI.Models
         #region Members
         PlotModel _plotModel;
         ObservableCollection<Tuple<LineSeries, NotifyCollectionChangedEventHandler, ObservableCollection<MeasureModel>>> _series;
+        Visibility _controls;
         #endregion
 
         #region Construction
@@ -32,6 +33,7 @@ namespace CoAP_Analyzer_GUI.Models
             Model.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Unit = "Unit", });
             Model.Title = "New Plot";
             Series = new ObservableCollection<Tuple<LineSeries, NotifyCollectionChangedEventHandler, ObservableCollection<MeasureModel>>>();
+            Controls = Visibility.Collapsed;
         }
         #endregion
 
@@ -46,6 +48,12 @@ namespace CoAP_Analyzer_GUI.Models
         {
             get { return _plotModel; }
             set { _plotModel = value; RaisePropertyChanged("Model"); }
+        }
+
+        public Visibility Controls 
+        {
+            get { return _controls; }
+            set { _controls = value; RaisePropertyChanged("Controls"); } 
         }
         #endregion
 
@@ -64,15 +72,26 @@ namespace CoAP_Analyzer_GUI.Models
                 NotifyCollectionChangedEventHandler, 
                 ObservableCollection<MeasureModel>>
                 (_ls, Measures_CollectionChanged, _wm.Measure));
+            RaisePropertyChanged("LineSeries");
+            RefreshPlot();
         }
 
         public void RemoveSeries(WorkerModel _wm)
         {
             Tuple<LineSeries, NotifyCollectionChangedEventHandler, ObservableCollection<MeasureModel>> _tp;
-            _tp = Series.Single(x => x.Item3.Equals(_wm.Measure));
-            _tp.Item3.CollectionChanged -= _tp.Item2;
-            Model.Series.Remove(_tp.Item1);
-            Series.Remove(_tp);
+            try
+            {
+                _tp = Series.Single(x => x.Item3.Equals(_wm.Measure));
+                _tp.Item3.CollectionChanged -= _tp.Item2;
+                Model.Series.Remove(_tp.Item1);
+                Series.Remove(_tp);
+                RaisePropertyChanged("LineSeries");
+                RefreshPlot();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         /**
@@ -83,16 +102,8 @@ namespace CoAP_Analyzer_GUI.Models
             Model.Series.Clear();
             Series.Clear();
             RaisePropertyChanged("LineSeries");
+            RefreshPlot();
         }
-
-        //public void UpdateSeries(LineSeries _ls, ObservableCollection<MeasureModel> _measures)
-        //{
-        //    foreach (MeasureModel _m in _measures)
-        //    {
-        //        _ls.Points.Add(new DataPoint(DateTimeAxis.ToDouble(_m.Time), _m.Value));
-        //    }
-        //    RaisePropertyChanged("LineSeries");
-        //}
 
         private void Measures_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -103,90 +114,16 @@ namespace CoAP_Analyzer_GUI.Models
                 _ls.Points.Add(new DataPoint(DateTimeAxis.ToDouble(((MeasureModel)_m).Time), ((MeasureModel)_m).Value));
             }
             RaisePropertyChanged("LineSeries");
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            RefreshPlot();
+        }
+
+        public void RefreshPlot()
+        {
+            Application.Current.Dispatcher.InvokeAsync((Action)delegate
             {
                 Model.InvalidatePlot(true);
             });
         }
         #endregion  
-    }
-
-    public class ChartListModel : BaseModel, IEnumerable
-    {
-        #region Members
-        ObservableCollection<ChartModel> _charts;
-        ChartModel _current;
-        ObservableCollection<WorkerModel> _workers;
-        #endregion
-
-        #region Construction
-        public ChartListModel()
-        {
-            _charts = new ObservableCollection<ChartModel>();
-            Navigation = new ObservableCollection<BaseModel>();
-            _current = new ChartModel();
-            Chart.Name = "New Chart";
-            Chart.Command = new RelayCommand(param => SharedData._command(SharedData._chartList.Chart), param => this.CanExe);
-            Workers = SharedData._workerList.Workers;
-        }
-        #endregion
-
-        private bool CanExe
-        {
-            get { return true; }
-        }
-
-        #region Properties
-        public ObservableCollection<WorkerModel> Workers
-        {
-            get
-            {
-                return _workers;
-            }
-            set
-            {
-                _workers = value;
-                RaisePropertyChanged("Workers");
-            }
-        }
-
-        public ChartModel Chart
-        {
-            get
-            {
-                return _current;
-            }
-            set
-            {
-                _current = value;
-                RaisePropertyChanged("Chart");
-            }
-        }
-
-        public ObservableCollection<ChartModel> Charts
-        {
-            get
-            {
-                return _charts;
-            }
-            set
-            {
-                _charts = value;
-                RaisePropertyChanged("Charts");
-            }
-        }
-        #endregion
-
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return (IEnumerator)GetEnumerator();
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return new ListEnum<ChartModel>(_charts);
-        }
-        #endregion
     }
 }

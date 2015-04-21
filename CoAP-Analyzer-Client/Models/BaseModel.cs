@@ -20,17 +20,46 @@ namespace CoAP_Analyzer_Client.Models
         #endregion
 
         #region Properties
-        public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
+        public string Name 
+        { 
+            get 
+            { 
+                return _name; 
+            } 
+            set 
+            { 
+                _name = value; 
+                RaisePropertyChanged("Name"); 
+            } 
+        }
+
         public ICommand Command
         {
-            get { return _command; }
-            set { _command = value; RaisePropertyChanged("Command"); }
+            get 
+            {
+                return _command;
+            }
+            set 
+            { 
+                _command = value; 
+                RaisePropertyChanged("Command");
+            }
         }
-        public BaseModel Self { get { return this; } }
+
+        public BaseModel Self 
+        { 
+            get 
+            { 
+                return this;
+            } 
+        }
 
         public ObservableCollection<BaseModel> Navigation
         {
-            get { return _navigation; }
+            get
+            {
+                return _navigation;
+            }
             set 
             { 
                 _navigation = value;

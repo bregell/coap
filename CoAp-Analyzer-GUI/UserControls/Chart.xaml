@@ -8,7 +8,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <oxy:PlotView Model="{Binding Model}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+        <oxy:PlotView x:Name="Chart_Plot" Model="{Binding Model}" />
+        <DockPanel Grid.Row="1" Visibility="{Binding Controls}">
+            <Button x:Name="save" Content="Save" Width="60" HorizontalAlignment="Left" Margin="0,0,2,0" Click="save_Click"/>
+            <Button x:Name="modify" Content="Modify" Width="60" HorizontalAlignment="Left" Margin="0,0,2,0" Click="modify_Click"/>
+            <Button x:Name="delete" Content="Delete" Width="60" HorizontalAlignment="Left" Margin="0,0,2,0" Click="delete_Click"/>
+        </DockPanel>
         <!--
         <oxy:LineSeries DataFieldX="Time" DataFieldY="Value" ItemsSource="{Binding MeasureList}" />
         <oxy:PlotView.Axes>

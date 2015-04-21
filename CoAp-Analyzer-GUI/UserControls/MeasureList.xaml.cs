@@ -23,7 +23,6 @@ namespace CoAP_Analyzer_GUI.UserControls
         public MeasureList()
         {
             InitializeComponent();
-            this.DataContext = SharedData._measureList;
         }
     }
 }
