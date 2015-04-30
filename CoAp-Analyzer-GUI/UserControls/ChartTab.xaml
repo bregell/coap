@@ -7,10 +7,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TabControl ItemsSource="{Binding Navigation}" SelectedIndex="0">
+        <TabControl ItemsSource="{Binding Navigation}" SelectedIndex="{Binding Path=Index}" >
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Path=Name}" DataContext="{Binding Path=Self}" />
+                    <TextBlock Text="{Binding Path=Name}" DataContext="{Binding Path=Self}" FontSize="15" FontFamily="Segoe UI Semibold" />
                 </DataTemplate>
             </TabControl.ItemTemplate>
         </TabControl>

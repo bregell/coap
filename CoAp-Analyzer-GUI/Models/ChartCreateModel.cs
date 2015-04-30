@@ -1,31 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CoAP_Analyzer_Client.Models;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Windows.Controls;
+﻿using CoAP_Analyzer_Client.Models;
 using CoAP_Analyzer_GUI.UserControls;
-using System.Windows.Input;
+using System.Collections.ObjectModel;
 
 namespace CoAP_Analyzer_GUI.Models
 {
     public class ChartCreateModel : BaseModel
     {
 
-        ObservableCollection<WorkerModel> _workers;
         ObservableCollection<ChartModel> _charts;
-        ChartModel _current;
+        ChartModel _current = new ChartModel();
 
         public ChartCreateModel(){
             Navigation = new ObservableCollection<BaseModel>();
             Charts = new ObservableCollection<ChartModel>();
-            Chart = new ChartModel();
             Chart.Name = "New Chart";
             Chart.Command = new RelayCommand(param => SharedData._command(Chart), param => true);
-            Workers = SharedData._workerList.Workers;
         }
 
         public ChartModel Chart
@@ -45,12 +34,7 @@ namespace CoAP_Analyzer_GUI.Models
         {
             get
             {
-                return _workers;
-            }
-            set
-            {
-                _workers = value;
-                RaisePropertyChanged("Workers");
+                return SharedData._workerList.Workers;
             }
         }
 

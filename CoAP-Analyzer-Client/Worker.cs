@@ -1,11 +1,10 @@
 ﻿#define DEBUG
+using CoAP_Analyzer_Client.Models;
 using System;
-using System.Windows;
-using System.Threading;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using CoAP_Analyzer_Client.Models;
+using System.Threading;
+using System.Windows;
 
 namespace CoAP_Analyzer_Client
 {
@@ -17,29 +16,23 @@ namespace CoAP_Analyzer_Client
     public class Worker
     {
         #region Members
-        private bool _shouldStop;
-        private bool _shouldPause;
-        private int _parameter;
-        public int _startTime;
-        private Host _host;
-        private int _rate;
-        public bool _done;
-        private Func<int, Measure> _methodToRun;
-        private ObservableCollection<MeasureModel> _measures;
+        bool _shouldStop = false;
+        bool _shouldPause = true;
+        bool _done = false; 
+        int _startTime = 0;
+
+        Host _host;
+        Resource _resource;
+        Func<Resource, Measure> _methodToRun;
+        ObservableCollection<MeasureModel> _measures = new ObservableCollection<MeasureModel>();
         #endregion
 
         #region Construction
-        public Worker(Host host, Func<int, Measure> f, int r, int param)
+        public Worker(Host _host, Func<Resource, Measure> _func, Resource _res)
         {
-            _host = host;
-            _done = false;
-            _shouldStop = false;
-            _shouldPause = true;
-            _rate = r;
-            _parameter = param;
-            _methodToRun = f;
-            _measures = new ObservableCollection<MeasureModel>();
-            _startTime = 0;
+            Host = _host;
+            Resource = _res;
+            MethodToRun = _func;
         }
         #endregion
 
@@ -48,27 +41,26 @@ namespace CoAP_Analyzer_Client
         {
             get
             {
-                return _rate;
+                return Resource.Rate;
             }
             set
             {
-                _rate = value;
+                Resource.Rate = value;
             }
-
         }
-        public int Parameter
+        public Resource Resource
         {
             get
             {
-                return _parameter;
+                return _resource;
             }
             set
             {
-                _parameter = value;
+                _resource = value;
             }
 
         }
-        public Func<int, Measure> MethodToRun
+        public Func<Resource, Measure> MethodToRun
         {
             get
             {
@@ -102,12 +94,31 @@ namespace CoAP_Analyzer_Client
                 _measures = value;
             }
         }
+        public int StartTime
+        {
+            get
+            {
+                return _startTime;
+            }
+            set
+            {
+                _startTime = value;
+            }
+        }
 
         public bool Running
         {
             get
             {
                 return !_shouldPause;
+            }
+        }
+
+        public bool Done
+        {
+            get
+            {
+                return _done;
             }
         }
         #endregion
@@ -118,22 +129,22 @@ namespace CoAP_Analyzer_Client
             waitCheck(1000, _startTime);
             while (!_shouldStop)
             {
-                Measure m = _methodToRun(_parameter);
+                Measure m = MethodToRun(Resource);
                 Application.Current.Dispatcher.Invoke((Action)delegate
                 {
-                    _measures.Add(new MeasureModel(m, _host.IP));
+                    _measures.Add(new MeasureModel(m, Host.IP, MethodToRun.Method.Name));
                 });               
                 #if DEBUG
-                System.Console.Write(_host.IP.ToString());
+                System.Console.Write(Host.IP.ToString());
                 System.Console.Write("@");
-                System.Console.Write(_methodToRun.Method.Name);
+                System.Console.Write(MethodToRun.Method.Name);
                 System.Console.Write(":");
-                System.Console.Write(m.value);
+                System.Console.Write(m.Value);
                 System.Console.Write(" ");
-                System.Console.Write(m.unit);
+                System.Console.Write(m.Unit);
                 System.Console.Write("\n");
                 #endif
-                waitCheck(1000, _rate);
+                waitCheck(1000, Resource.Rate);
             }
             _done = true;
         }

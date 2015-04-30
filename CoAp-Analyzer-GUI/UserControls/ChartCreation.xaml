@@ -5,38 +5,73 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              xmlns:local="clr-namespace:CoAP_Analyzer_GUI.UserControls"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="650"
+             >
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="60" />
-            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
         </Grid.RowDefinitions>
+        <Grid.Resources>
+            <CollectionViewSource x:Key="Groups" Source="{Binding Workers}">
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription PropertyName="IP" />
+                </CollectionViewSource.GroupDescriptions>
+            </CollectionViewSource>
+        </Grid.Resources>
         <ListView 
             Grid.Column="0"
             x:Name="workerlist" 
-            ItemsSource="{Binding Workers}"
+            ItemsSource="{Binding Source={StaticResource Groups}}"
             BorderThickness="0"
             SelectionMode="Multiple"
             SelectionChanged="workerlist_SelectionChanged">
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="False">
+                                            <Expander.Header>
+                                                <DockPanel>
+                                                    <TextBlock Text="Mote: " FontSize="13" />
+                                                    <TextBlock Text="{Binding Path=Name}" FontSize="13"/>
+                                                </DockPanel>
+                                            </Expander.Header>
+                                            <Expander.Content>
+                                                <ItemsPresenter />
+                                            </Expander.Content>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ListView.GroupStyle>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name"       DisplayMemberBinding="{Binding MethodName}" />
-                    <GridViewColumn Header="IP"         DisplayMemberBinding="{Binding IP}" />
-                    <GridViewColumn Header="Rate(ms)"   DisplayMemberBinding="{Binding Rate}" />
-                </GridView>
+                    <GridViewColumn Header="Resource" DisplayMemberBinding="{Binding Path=MethodName}" />
+                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=Path}" />
+                    <GridViewColumn Header="Rate" DisplayMemberBinding="{Binding Path=Rate}" />
+                    <GridViewColumn Header="Timeout" DisplayMemberBinding="{Binding Path=Timeout}" />
+                </GridView>    
             </ListView.View>
         </ListView>
-        <Grid Grid.Column="1" Grid.ColumnSpan="3">
+        <Grid Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="3">
             <local:Chart DataContext="{Binding Chart}" />
         </Grid>
         <TextBox Grid.Row="1" Text="{Binding Path=Chart.Model.Title}" />
-        <Button x:Name="Save" Grid.Row="1" Grid.Column="1" Content="Save" Click="Save_Click"/>
-        <Button x:Name="Clear" Grid.Row="1" Grid.Column="2" Content="Clear" Click="Clear_Click"/>
+        <DockPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">
+            <Button x:Name="Save"  Width="60" Content="Save" Click="Save_Click" Margin="0,0,2,0"/>
+            <Button x:Name="Clear" Width="60"  Content="Clear" Click="Clear_Click" Margin="0,0,2,0"/>
+        </DockPanel>
     </Grid>
 </UserControl>

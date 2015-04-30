@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using CoAP_Analyzer_GUI.Models;
 using CoAP_Analyzer_GUI.UserControls;
+using System.Collections.ObjectModel;
 
 namespace CoAP_Analyzer_GUI
 {
@@ -29,12 +30,11 @@ namespace CoAP_Analyzer_GUI
     {
         public static MainWindowModel _mwm = new MainWindowModel();
         public static HostListModel _hostList = new HostListModel(){ Name = "_Hosts", Command = new RelayCommand(param => _command(SharedData._hostList), param => true) };
-        public static WorkerListModel _workerList = new WorkerListModel() { Name="_Workers", Command = new RelayCommand(param => _command(SharedData._workerList), param => true) };
-        public static MeasureListModel _measureList = new MeasureListModel() { Name="_Measures", Command = new RelayCommand(param => _command(SharedData._measureList), param => true) };
+        public static WorkerListModel _workerList = new WorkerListModel() { Name = "_Workers", Command = new RelayCommand(param => _command(SharedData._workerList), param => true) };
+        public static MeasureListModel _measureList = new MeasureListModel() { Name="M_easures", Command = new RelayCommand(param => _command(SharedData._measureList), param => true) };
         public static ChartTabModel _chartTab = new ChartTabModel() { Name = "_Charts", Command = new RelayCommand(param => _command(SharedData._chartTab), param => true) };
+        public static HostCreationModel _hostCreate = new HostCreationModel() { Name = "_Motes", Command = new RelayCommand(param => _command(SharedData._hostCreate), param => true) };
         public static Action<object> _command;
-        public static List<Worker> _removedWorkers = new List<Worker>();
-        public static List<Thread> _threads = new List<Thread>();
         public static bool _running = false;
     }
 
@@ -47,13 +47,14 @@ namespace CoAP_Analyzer_GUI
         public MainWindow()
         {
             SharedData._command = ChangeView;
-            _mwm.addNavigation(SharedData._hostList); // Workers = SharedData._workerList.Workers 
-            _mwm.addNavigation(SharedData._workerList); //Hosts = SharedData._hostList.Hosts
-            _mwm.addNavigation(SharedData._measureList); //Measures = SharedData._measureList.Measures
+            //_mwm.addNavigation(SharedData._hostList); 
+            //_mwm.addNavigation(SharedData._workerList);
+            _mwm.addNavigation(SharedData._hostCreate);
             _mwm.addNavigation(SharedData._chartTab);
+            _mwm.addNavigation(SharedData._measureList);
             this.DataContext = _mwm;
             InitializeComponent();
-            GridContent.Content = SharedData._hostList;
+            GridContent.Content = SharedData._hostCreate;
             
         }
 
@@ -87,9 +88,9 @@ namespace CoAP_Analyzer_GUI
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e){
-            List<Worker> _swl = SharedData._removedWorkers;
+            List<Worker> _swl = new List<Worker>();
             SharedData._workerList.Workers.ToList().ForEach(x => _swl.Add(x.Worker));
-            Program.saveToFile(_swl, "Output.xls");
+            //Program.saveToFile(_swl, "Output.xls");
         }
     }
 }

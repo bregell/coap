@@ -1,12 +1,11 @@
 ﻿#define DEBUG
-using System;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Net;
-using System.Diagnostics;
 using CoAP;
 using CoAP.Net;
-using CoAP_Analyzer_Client.Models;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Runtime.Serialization.Json;
 
 namespace CoAP_Analyzer_Client
 {
@@ -58,6 +57,94 @@ namespace CoAP_Analyzer_Client
         #endregion
 
         #region Methods
+        public Measure Resource(Resource _res)
+        {
+            _res.Timeout = (_res.Timeout == 0) ? System.Threading.Timeout.Infinite : _res.Timeout;
+            //Prepare the package
+            Request _req;
+            Uri uri = new UriBuilder(CoapConstants.UriScheme, _ip.ToString(), CoapConstants.DefaultPort, _res.Path).Uri;
+            
+
+            CoapClient _cc = new CoapClient(uri, _conf);
+            _cc.EndPoint = _endpoint;
+            _cc.Timeout = _res.Timeout;
+
+
+            if (_res.Path.Equals(""))
+            {
+                _req = new Request(Code.Empty, true);
+                _req.URI = uri;
+                _req.Token = CoapConstants.EmptyToken;
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+                _req.Response = _cc.Send(_req);
+                stopWatch.Stop();
+                if (_req.Response == null)
+                {
+                    return new Measure(stopWatch.ElapsedMilliseconds, "ms");
+                }
+                else if (_req.IsTimedOut)
+                {
+                    return new Measure(-1, "Timeout");
+                }
+            } else if (_res.Param > 0){
+                _req = new Request(Method.PUT);
+                //_req.Timeout += delegate(object sender, EventArgs e)
+                //{
+                //    _req.IsTimedOut = true;
+                //};
+                _req.URI = uri;
+                String payload = new String('X', _res.Param);
+                _req.SetPayload(payload, MediaType.TextPlain);
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+                _req.Response = _cc.Send(_req);
+                stopWatch.Stop();
+                if (_req.Response != null)
+                {
+                    Debug.WriteLine("#####");
+                    Debug.WriteLine(stopWatch.ElapsedMilliseconds.ToString());
+                    Debug.WriteLine(_req.Response.RTT);
+                    Debug.WriteLine("#####");
+                    return new Measure((((double)_res.Param / 1024.0) / (_req.Response.RTT / 1000.0)), "kB/s");
+                }
+                else if (_req.IsTimedOut)
+                {
+                    return new Measure(-1, "Timeout");
+                }
+            } else {
+                //Send Package 
+                _req = new Request(Method.GET);
+                //_req.Timeout += delegate(object sender, EventArgs e)
+                //{
+                //    _req.IsTimedOut = true;
+                //};
+                _req.URI = uri;
+                _req.Accept = MediaType.ApplicationJson;
+                _req.Response = _cc.Send(_req);
+                if (_req.Response != null && _req.Response.PayloadSize != 0)
+                {
+                    DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Measure));
+                    try
+                    {
+                        MemoryStream stream1 = new MemoryStream(_req.Response.Payload);
+                        Measure t = (Measure)ser.ReadObject(stream1);
+                        t.Time = DateTime.Now;
+                        return t;
+                    }
+                    catch (Exception)
+                    {
+                        return new Measure(-1, "Serialization Error");
+                    }
+                }
+                else if (_req.IsTimedOut)
+                {
+                    return new Measure(-1, "Timeout");
+                }
+            }
+            return new Measure(-1, "Error");
+        }
+
         public Measure Temp(int timeout)
         {
             timeout = (timeout == 0) ? System.Threading.Timeout.Infinite : timeout;
@@ -72,12 +159,13 @@ namespace CoAP_Analyzer_Client
             req.Response = req.WaitForResponse(10000);
             if (req.Response != null && req.Response.PayloadSize != 0)
             {
-                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Temp));
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(TempC));
                 try {
                     MemoryStream stream1 = new MemoryStream(req.Response.Payload);
-                    Temp t = (Temp)ser.ReadObject(stream1);
-                    
-                    return new Measure(t.temp, t.unit, DateTime.Now);
+                    TempC t = (TempC)ser.ReadObject(stream1);
+                    t.Time = DateTime.Now;
+
+                    return t;
                 }
                 catch (Exception)
                 {
@@ -100,11 +188,11 @@ namespace CoAP_Analyzer_Client
             req.Response = req.WaitForResponse(10000);
             if (req.Response != null && req.Response.PayloadSize != 0)
             {
-                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Light));
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(LightC));
                 try {    
                     MemoryStream stream1 = new MemoryStream(req.Response.Payload);
-                    Light l = (Light)ser.ReadObject(stream1);
-                    return new Measure(l.light, l.unit, DateTime.Now);
+                    LightC l = (LightC)ser.ReadObject(stream1);
+                    return new Measure(l.Light, l.Unit, DateTime.Now);
                 }
                 catch (Exception)
                 {
@@ -127,11 +215,11 @@ namespace CoAP_Analyzer_Client
             req.Response = req.WaitForResponse(10000);
             if (req.Response != null && req.Response.PayloadSize != 0)
             {
-                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Humididy));
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(HumididyC));
                 try {
                     MemoryStream stream1 = new MemoryStream(req.Response.Payload);
-                    Humididy h = (Humididy)ser.ReadObject(stream1);
-                    return new Measure(h.humidity, h.unit, DateTime.Now);
+                    HumididyC h = (HumididyC)ser.ReadObject(stream1);
+                    return new Measure(h.Humidity, h.Unit, DateTime.Now);
                 }
                 catch (Exception)
                 {
@@ -153,12 +241,12 @@ namespace CoAP_Analyzer_Client
             req.Response = req.WaitForResponse(10000);
             if (req.Response != null && req.Response.PayloadSize != 0)
             {
-                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Vcc3));
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(VoltageC));
                 try
                 {
                     MemoryStream stream1 = new MemoryStream(req.Response.Payload);
-                    Vcc3 v = (Vcc3)ser.ReadObject(stream1);
-                    return new Measure(v.voltage, v.unit, DateTime.Now);
+                    VoltageC v = (VoltageC)ser.ReadObject(stream1);
+                    return new Measure(v.Voltage, v.Unit, DateTime.Now);
                 }
                 catch (Exception)
                 {

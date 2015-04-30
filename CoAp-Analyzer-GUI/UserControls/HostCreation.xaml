@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="CoAP_Analyzer_GUI.UserControls.HostCreation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CoAP_Analyzer_GUI.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="880">
+    <Grid>
+        <DockPanel>
+            <local:HostList x:Name="HostL" DataContext="{Binding Hosts}" Background="White" Margin="0,0,5,0"/>
+            <local:WorkerList x:Name="WorkerL" DataContext="{Binding Workers}" />
+        </DockPanel>
+    </Grid>
+</UserControl>

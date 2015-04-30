@@ -1,28 +1,19 @@
-﻿using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using CoAP_Analyzer_Client;
 
 namespace CoAP_Analyzer_Client.Models
 {
     public class HostModel : BaseModel
     {
         #region Members
-        Host _host;
+        Host _host = new Host { IP = null };
+        WorkerListModel _workers = new WorkerListModel();
         int _rate;
         #endregion
 
         #region Construction
         public HostModel()
         {
-            _host = new Host { IP = null };
             Name = "Host";
         }
 
@@ -42,6 +33,20 @@ namespace CoAP_Analyzer_Client.Models
             set
             {
                 _host = value;
+                RaisePropertyChanged("Host");
+            }
+        }
+
+        public WorkerListModel Workers
+        {
+            get
+            {
+                return _workers;
+            }
+            set
+            {
+                _workers = value;
+                RaisePropertyChanged("Workers");
             }
         }
 
@@ -67,20 +72,6 @@ namespace CoAP_Analyzer_Client.Models
             {
                 _rate = value;
                 RaisePropertyChanged("Rate");
-            }
-        }
-
-        public bool Running
-        {
-            get
-            {
-                return _host.Running;
-
-            }
-            set
-            {
-                _host.Running = value;
-                RaisePropertyChanged("Running");
             }
         }
         #endregion

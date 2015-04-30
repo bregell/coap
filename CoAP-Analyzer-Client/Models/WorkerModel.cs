@@ -1,8 +1,5 @@
-﻿using CoAP_Analyzer_Client;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Net;
 
 namespace CoAP_Analyzer_Client.Models
@@ -27,11 +24,24 @@ namespace CoAP_Analyzer_Client.Models
             }
         }
 
+        public string Path
+        {
+            get
+            {
+                return Worker.Resource.Path;
+            }
+        }
+
         public string MethodName
         {
             get
             {
-                return _worker.MethodToRun.Method.Name.ToString();
+                return Worker.Resource.Name;
+            }
+            set
+            {
+                Worker.Resource.Name = value;
+                RaisePropertyChanged("MethodName");
             }
         }
 
@@ -39,11 +49,11 @@ namespace CoAP_Analyzer_Client.Models
         {
             get
             {
-                return _worker.Host.IP;
+                return Worker.Host.IP;
             }
             set
             {
-                _worker.Host.IP = value;
+                Worker.Host.IP = value;
                 RaisePropertyChanged("IP");
             }
         }
@@ -52,12 +62,25 @@ namespace CoAP_Analyzer_Client.Models
         {
             get
             {
-                return _worker.Rate;
+                return Worker.Rate;
             }
             set
             {
-                _worker.Rate = value;
+                Worker.Rate = value;
                 RaisePropertyChanged("Rate");
+            }
+        }
+
+        public int Timeout
+        {
+            get
+            {
+                return Worker.Resource.Timeout;
+            }
+            set
+            {
+                Worker.Resource.Timeout = value;
+                RaisePropertyChanged("Timeout");
             }
         }
 
@@ -65,57 +88,20 @@ namespace CoAP_Analyzer_Client.Models
         {
             get
             {
-                return _worker.Measures;
+                return Worker.Measures;
             }
         }
         #endregion
 
         #region Construction
-        public WorkerModel(Host host, Func<int, Measure> f, int r, int param)
+        public WorkerModel(Host host, Func<Resource, Measure> f, Resource param)
         {
-            Worker = new Worker(host, f, r, param);
-        }
-        #endregion
-    }
-
-    public class WorkerListModel : BaseModel, IEnumerable
-    {
-        #region Members
-        ObservableCollection<WorkerModel> _workers;
-        #endregion
-
-        #region Construction
-        public WorkerListModel()
-        {
-            _workers = new ObservableCollection<WorkerModel>();
+            Worker = new Worker(host, f, param);
         }
         #endregion
 
-        #region Properties
-        public ObservableCollection<WorkerModel> Workers
-        {
-            get
-            {
-                return _workers;
-            }
-            set
-            {
-                _workers = value;
-                RaisePropertyChanged("Workers");
-            }
-        }
+        #region Methods
+
         #endregion
-
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return (IEnumerator)GetEnumerator();
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return new ListEnum<WorkerModel>(_workers);
-        }
-        #endregion 
     }
 }

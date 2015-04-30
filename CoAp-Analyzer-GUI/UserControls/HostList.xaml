@@ -10,34 +10,50 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="25" />
             <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-
-            <ColumnDefinition Width="264" />
-            <ColumnDefinition Width="140" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="180" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <ListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" x:Name="List" ItemsSource="{Binding Hosts}" BorderThickness="0"
-                  SelectionChanged="List_SelectionChanged" 
-                  MouseDoubleClick="List_MouseDoubleClick" 
-                  KeyUp="List_KeyUp">
+        <ListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" x:Name="host_list" ItemsSource="{Binding Hosts}" BorderThickness="0" SelectionChanged="list_selectionchanged">
             <ListView.View>
                 <GridView AllowsColumnReorder="True">
-                    <GridViewColumn Header="Host IP" DisplayMemberBinding="{Binding Path=IP}" Width="200"/>
-                    <GridViewColumn Header="Rate(ms)" DisplayMemberBinding="{Binding Path=Rate}" Width="100"/>
-                    <GridViewColumn Header="Running" DisplayMemberBinding="{Binding Path=Running}" Width="100"/>
+                    <GridViewColumn >
+                        <GridViewColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="Node Name" FontSize="15" FontFamily="Segoe UI Semibold" />
+                            </DataTemplate>
+                        </GridViewColumn.HeaderTemplate>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Path=Name}" BorderThickness="0"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=IP}">
+                        <GridViewColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="Node IP" FontSize="15" FontFamily="Segoe UI Semibold" />
+                            </DataTemplate>
+                        </GridViewColumn.HeaderTemplate>
+                    </GridViewColumn>               
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button x:Name="Remove" Content="Remove" Width="70" Click="Remove_Click" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        <DockPanel Grid.Row="1" Grid.Column="1">
-            <Button x:Name="Start_Stop" Content="Start" Width="70" Click="Start_Stop_Click" HorizontalAlignment="Left" Margin="0,0,2,0"/>
-            <Button x:Name="Remove" Content="Remove" Width="70" Click="Remove_Click" HorizontalAlignment="Left" Margin="0,0,2,0"/>
-        </DockPanel>
-        <DockPanel Grid.Row="2" Grid.Column="0">
-            <TextBox x:Name="NewHostBox" ToolTip="IPv6 Address" Width="220" HorizontalAlignment="Left" Margin="0,0,2,0"/>
-            <TextBox x:Name="NewRateBox" ToolTip="Rate(Seconds)" Width="40" HorizontalAlignment="Left" Margin="0,0,2,0" />
-        </DockPanel>
-        <DockPanel Grid.Row="2" Grid.Column="1">
+        <TextBlock Grid.Row="1" Grid.Column="0">Node Name</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="1">Node IP</TextBlock>
+        <TextBox Grid.Row="2" Grid.Column="0" x:Name="node_name" ToolTip="Node Name" Margin="0,0,2,0" />
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="node_ip" ToolTip="Node IP" Margin="0,0,2,0"/>    
+        <DockPanel Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right">
             <Button x:Name="AddHost" Content="Add" Width="70" Click="AddHost_Click" HorizontalAlignment="Left" Margin="0,0,2,0" />
             <Button x:Name="ClearHost" Content="Clear" Width="70" Click="ClearHost_Click" HorizontalAlignment="Left" Margin="0,0,2,0"/>
         </DockPanel>

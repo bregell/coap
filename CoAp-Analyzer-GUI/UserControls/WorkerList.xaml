@@ -5,16 +5,109 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:usr="clr-namespace:CoAP_Analyzer_GUI.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <ListView x:Name="workerlist" ItemsSource="{Binding Workers}" MouseDoubleClick="ListView_MouseDoubleClick" BorderThickness="0">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name"       DisplayMemberBinding="{Binding MethodName}" />
-                    <GridViewColumn Header="IP"         DisplayMemberBinding="{Binding IP}" />
-                    <GridViewColumn Header="Rate(ms)"   DisplayMemberBinding="{Binding Rate}" />
+             d:DesignHeight="300" d:DesignWidth="410">
+    
+    <Grid x:Name="content" Background="White" IsEnabled="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="144" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <ListView x:Name="workerlist"
+                  BorderThickness="0"
+                  ItemsSource="{Binding Workers}"
+                  MouseDoubleClick="ListView_MouseDoubleClick"
+                  Grid.Row="0" Grid.RowSpan="1"
+                  Grid.Column="0" Grid.ColumnSpan="5">          
+             <ListView.View>
+                 <GridView>
+                    <GridViewColumn>
+                        <GridViewColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="Name" FontSize="15" FontFamily="Segoe UI Semibold" />
+                            </DataTemplate>
+                        </GridViewColumn.HeaderTemplate>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox  Text="{Binding Path=MethodName}" BorderThickness="0"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=Path}" />
+                    <GridViewColumn>
+                        <GridViewColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="Rate" FontSize="15" FontFamily="Segoe UI Semibold" />
+                            </DataTemplate>
+                        </GridViewColumn.HeaderTemplate>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Path=Rate}" BorderThickness="0" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn>
+                        <GridViewColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="Timeout" FontSize="15" FontFamily="Segoe UI Semibold" />
+                            </DataTemplate>
+                        </GridViewColumn.HeaderTemplate>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Path=Timeout}" BorderThickness="0"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <DockPanel>
+                                    <Button Content="Start" Click="worker_start_Click"/>
+                                    <Button x:Name="worker_remove" Content="X" Click="worker_remove_Click"/>
+                                </DockPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
+        <DockPanel Grid.Row="1" Grid.Column="3">
+            <Button x:Name="res_rem" Content="Remove" Width="70" HorizontalAlignment="Right" Margin="0,0,2,0" Click="res_rem_Click"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,2,0">
+            <ComboBox x:Name="res_list" ItemsSource="{Binding Resources}" SelectionChanged="res_list_SelectionChanged">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </DockPanel>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Resource Path" Margin="0,2,2,0"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="Rate" Margin="0,2,2,0"/>
+        <TextBlock Grid.Row="2" Grid.Column="2" Text="Timeout" Margin="0,2,2,0"/>
+        <TextBlock Grid.Row="2" Grid.Column="3" Text="Name" Margin="0,2,2,0"/>
+        <TextBlock x:Name="resource_size_label" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Text="Size(bytes)" Visibility="Hidden" Margin="0,2,2,0"/>
+        <TextBox x:Name="resource_path" Grid.Row="3" Grid.Column="0" ToolTip="Path to resource" Margin="0,2,2,0"/>
+        <TextBox x:Name="resource_rate" Grid.Row="3" Grid.Column="1" ToolTip="Rate" Margin="0,2,2,0"/>
+        <TextBox x:Name="resource_timeout" Grid.Row="3" Grid.Column="2" ToolTip="Timeout" Margin="0,2,2,0" />
+        <TextBox x:Name="resource_name" Grid.Row="3" Grid.Column="3" ToolTip="Name" Margin="0,2,2,0" />
+        <TextBox x:Name="resource_size" Grid.Row="5" Grid.Column="2" ToolTip="Size(bytes)" Margin="0,2,2,0" Visibility="Hidden" />
+        <DockPanel Grid.Row="5" Grid.Column="3">
+            <Button x:Name="add_res" Content="Add" Width="70" HorizontalAlignment="Left" Margin="0,2,2,0" Click="add_res_Click" />
+            <Button x:Name="clear_res" Content="Clear" Width="70" HorizontalAlignment="Left" Margin="0,2,2,0" Click="clear_res_Click" />
+        </DockPanel>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Troughput Test?" HorizontalAlignment="Right" Margin="0,2,2,0"/>
+        <CheckBox Grid.Row="5" Grid.Column="1" x:Name="has_data" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="False" Checked="has_data_Checked" Unchecked="has_data_Unchecked"/>
     </Grid>
 </UserControl>

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Net;
-using CoAP_Analyzer_Client;
 
 namespace CoAP_Analyzer_Client.Models
 {
@@ -26,6 +22,12 @@ namespace CoAP_Analyzer_Client.Models
             Measure = _m;
             IP = _ip;
         }
+        public MeasureModel(Measure _m, IPAddress _ip, string _name)
+        {
+            Measure = _m;
+            IP = _ip;
+            Name = _name;
+        }
         #endregion
 
         #region Properties
@@ -45,11 +47,11 @@ namespace CoAP_Analyzer_Client.Models
         {
             get
             {
-                return _measure.value;
+                return _measure.Value;
             }
             set
             {
-                _measure.value = value;
+                _measure.Value = value;
                 RaisePropertyChanged("Value");
             }
         }
@@ -58,11 +60,11 @@ namespace CoAP_Analyzer_Client.Models
         {
             get
             {
-                return _measure.unit;
+                return _measure.Unit;
             }
             set
             {
-                _measure.unit = value;
+                _measure.Unit = value;
                 RaisePropertyChanged("Unit");
             }
         }
@@ -71,11 +73,11 @@ namespace CoAP_Analyzer_Client.Models
         {
             get
             {
-                return _measure.time;
+                return _measure.Time;
             }
             set
             {
-                _measure.time = value;
+                _measure.Time = value;
                 RaisePropertyChanged("Time");
             }
         }
@@ -92,54 +94,5 @@ namespace CoAP_Analyzer_Client.Models
             }
         }
         #endregion
-    }
-
-    public class MeasureListModel : BaseModel, IEnumerable
-    {
-        #region Members
-        ObservableCollection<MeasureModel> _measures;
-        #endregion
-
-        #region Construction
-        public MeasureListModel()
-        {
-            Measures = new ObservableCollection<MeasureModel>();
-        }
-        #endregion
-
-        #region Properties
-        public ObservableCollection<MeasureModel> Measures
-        {
-            get
-            {
-                return _measures;
-            }
-            set
-            {
-                _measures = value;
-                RaisePropertyChanged("Measures");
-            }
-        }
-
-        public string Unit
-        {
-            get
-            {
-                return Measures.Count != 0 ? Measures[0].Unit : "Unit";
-            }
-        }
-        #endregion
-
-        #region IEnumerable Members
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return (IEnumerator)GetEnumerator();
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return new ListEnum<MeasureModel>(_measures);
-        }
-        #endregion 
     }
 }

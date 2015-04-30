@@ -1,26 +1,15 @@
-﻿using System;
+﻿using CoAP_Analyzer_Client.Models;
+using CoAP_Analyzer_GUI.Models;
+using OxyPlot.Series;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Specialized;
+using System.Data;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using System.ComponentModel;
-using CoAP_Analyzer_Client;
-using CoAP_Analyzer_Client.Models;
-using CoAP_Analyzer_GUI.Models;
-using System.Collections.Specialized;
 
 namespace CoAP_Analyzer_GUI.UserControls
 {
@@ -37,88 +26,62 @@ namespace CoAP_Analyzer_GUI.UserControls
         private void save_Click(object sender, RoutedEventArgs e)
         {
             ChartModel _cm = (ChartModel)DataContext;
-            //SaveFileDialog _sfd = new SaveFileDialog();
-            //_sfd.InitialDirectory = "%userprofile%/desktop";
-            //_sfd.ShowDialog(SharedData._mwm);
-            ObservableCollection<MeasureModel> _mm = new ObservableCollection<MeasureModel>();
-            foreach(Tuple<LineSeries, NotifyCollectionChangedEventHandler, ObservableCollection<MeasureModel>> _tuple in _cm.Series){
-                _mm.Concat(_tuple.Item3);
+            List<ObservableCollection<MeasureModel>> _lmm = new List<ObservableCollection<MeasureModel>>();
+            foreach (Tuple<LineSeries, NotifyCollectionChangedEventHandler, ObservableCollection<MeasureModel>> _tuple in _cm.Series)
+            {
+                _lmm.Add(_tuple.Item3);
             }
-            //TODO
-            //Program.saveToFile(, _sfd.FileName);
+            List<string> _name = new List<string>();
+            foreach (Series _ec in _cm.Model.Series)
+            {
+                _name.Add(_ec.Title);
+            }
+            DataSet _ds = new DataSet(_cm.Name);
+            List<DataTable> _tables = new List<DataTable>();
+            int i = 0;
+            foreach (ObservableCollection<MeasureModel> _mm in _lmm)
+            {
+                DataTable _table = new DataTable(_name[i++]);
+                _table.Columns.Add(new System.Data.DataColumn("Ip"));
+                _table.Columns.Add(new System.Data.DataColumn(_mm[0].Unit, System.Type.GetType("System.Double")));
+                _table.Columns.Add(new System.Data.DataColumn("Unit"));
+                _table.Columns.Add(new System.Data.DataColumn("Time"));
+                _tables.Add(_table);
+                foreach (MeasureModel m in _mm)
+                {
+                    _tables.Find(x => x.TableName == m.Name).Rows.Add(m.IP, m.Value, m.Unit, m.Time);
+                }
+            }
+            foreach (DataTable t in _tables)
+            {
+                _ds.Tables.Add(t);
+            }
+            try
+            {
+                ExcelLibrary.DataSetHelper.CreateWorkbook(_cm.Name+".xlsx", _ds);
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine("Cannot save to that file, enter new filename!:");
+            }
         }
 
         private void modify_Click(object sender, RoutedEventArgs e)
         {
-
+            ChartModel _cm = (ChartModel)DataContext;
+            if (!SharedData._chartTab.CreateModel.Chart.Equals(_cm))
+            {
+                SharedData._chartTab.CreateModel.Chart = _cm;
+            }        
+            SharedData._chartTab.Index = 0;
+            _cm.Controls = System.Windows.Visibility.Hidden;
         }
 
         private void delete_Click(object sender, RoutedEventArgs e)
         {
-
+            ChartModel _cm = (ChartModel)DataContext;
+            SharedData._chartTab.Navigation.Remove(_cm);
+            SharedData._chartTab.Index = 0;
         }
     }
-    //SharedData._measureList.Measures.Clear();
-    //        foreach (MeasureModel _m in w.Worker.Measures)
-    //        {
-    //            SharedData._measureList.Measures.Add(_m);
-    //        }
-    //public class TestModel : INotifyPropertyChanged
-    //{
-    //    LineSeries _ls;
-    //    PlotModel _pm;
-
-    //    public TestModel()
-    //    {
-    //        PlotModel _pm = new PlotModel { Title = "Test Plot" };
-    //        _pm.Axes.Add(new DateTimeAxis { Position = AxisPosition.Bottom, Unit = "Time" });
-    //        _pm.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Unit = "Unit",   });
-    //        _ls = new LineSeries { DataFieldX = "Time", DataFieldY = "Value" };
-    //        _ls.Title = "Test Title";
-    //        Series.ItemsSource = SharedData._measureList.Measures;
-    //        _pm.Series.Add(_ls);
-    //        Model = _pm;
-    //    }
-
-
-    //    public PlotModel Model 
-    //    { 
-    //        get 
-    //        { 
-    //            return _pm; 
-    //        } 
-    //        set 
-    //        { 
-    //            _pm = value; 
-    //            RaisePropertyChanged("Model"); 
-    //        } 
-    //    }
-
-    //    public LineSeries Series 
-    //    { 
-    //        get 
-    //        { 
-    //            return _ls; 
-    //        } 
-    //        set { 
-    //            _ls = value;
-    //            RaisePropertyChanged("Series");
-    //        } 
-    //    }
-
-    //    #region INotifyPropertyChanged Members
-    //    public event PropertyChangedEventHandler PropertyChanged;
-    //    #endregion
-
-    //    #region Methods
-    //    private void RaisePropertyChanged(string propertyName)
-    //    {
-    //        PropertyChangedEventHandler handler = PropertyChanged;
-    //        if (handler != null)
-    //        {
-    //            handler(this, new PropertyChangedEventArgs(propertyName));
-    //        }
-    //    }
-    //    #endregion
-    //}
 }

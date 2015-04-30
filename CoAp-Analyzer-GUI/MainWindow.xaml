@@ -7,7 +7,7 @@
         xmlns:cmg="clr-namespace:CoAP_Analyzer_GUI.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-        x:Class="CoAP_Analyzer_GUI.MainWindow" Height="600" Width="800">
+        x:Class="CoAP_Analyzer_GUI.MainWindow" Height="600" Width="1000">
     
     <Window.Resources>
         <DataTemplate DataType="{x:Type cm:HostListModel}">
@@ -28,6 +28,9 @@
         <DataTemplate DataType="{x:Type cmg:ChartModel}">
             <uc:Chart />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type cmg:HostCreationModel}">
+            <uc:HostCreation />
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -37,22 +40,14 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Column="0">  
-            <Menu x:Name="Menu" ItemsSource="{Binding Navigation}" Background="White" >
-                <Menu.ItemContainerStyle>
-                    <Style>
-                        <Setter Property="MenuItem.Header" Value="{Binding Path=Name}" />
-                        <Setter Property="MenuItem.HeaderStringFormat" Value="" />
-                        <Setter Property="MenuItem.Command" Value="{Binding Path=Command}" />
-                        <Setter Property="MenuItem.CommandParameter" Value="{Binding}" />
-                        <Setter Property="MenuItem.HorizontalContentAlignment" Value="Center" />
-                    </Style>
-                </Menu.ItemContainerStyle>
-            </Menu>
-            <Menu>
-                <Separator />
-                <MenuItem x:Name="SaveBtn" Header="_Save" Click="SaveBtn_Click" />
-            </Menu>
+        <StackPanel Grid.Column="0">
+            <ItemsControl ItemsSource="{Binding Navigation}" Background="White">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Path=Name}" Command="{Binding Path=Command}"  Height="50" FontSize="17" FontFamily="Segoe UI Semibold" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
         <Grid x:Name="MainGrid" Grid.Column="1">
             <ContentControl x:Name="GridContent"/>

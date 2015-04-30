@@ -3,11 +3,11 @@
 namespace CoAP_Analyzer_GUI.UserControls
 {
     /// <summary>
-    /// Interaction logic for MeasureList.xaml
+    /// Interaction logic for HostCreation.xaml
     /// </summary>
-    public partial class MeasureList : UserControl
+    public partial class HostCreation : UserControl
     {
-        public MeasureList()
+        public HostCreation()
         {
             InitializeComponent();
         }
