@@ -45,12 +45,12 @@ namespace CoAP_Analyzer_GUI.UserControls
                 _table.Columns.Add(new System.Data.DataColumn("Ip"));
                 _table.Columns.Add(new System.Data.DataColumn(_mm[0].Unit, System.Type.GetType("System.Double")));
                 _table.Columns.Add(new System.Data.DataColumn("Unit"));
-                _table.Columns.Add(new System.Data.DataColumn("Time"));
-                _tables.Add(_table);
+                _table.Columns.Add(new System.Data.DataColumn("Time"));  
                 foreach (MeasureModel m in _mm)
                 {
-                    _tables.Find(x => x.TableName == m.Name).Rows.Add(m.IP, m.Value, m.Unit, m.Time);
+                    _table.Rows.Add(m.IP, m.Value, m.Unit, m.Time);
                 }
+                _tables.Add(_table);
             }
             foreach (DataTable t in _tables)
             {
@@ -58,7 +58,7 @@ namespace CoAP_Analyzer_GUI.UserControls
             }
             try
             {
-                ExcelLibrary.DataSetHelper.CreateWorkbook(_cm.Name+".xlsx", _ds);
+                ExcelLibrary.DataSetHelper.CreateWorkbook(_cm.Name+".xls", _ds);
             }
             catch (Exception)
             {

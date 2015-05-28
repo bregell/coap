@@ -106,7 +106,7 @@ namespace CoAP_Analyzer_Client
                     Debug.WriteLine(stopWatch.ElapsedMilliseconds.ToString());
                     Debug.WriteLine(_req.Response.RTT);
                     Debug.WriteLine("#####");
-                    return new Measure((((double)_res.Param / 1024.0) / (_req.Response.RTT / 1000.0)), "kB/s");
+                    return new Measure((((double)_res.Param) / (_req.Response.RTT)), "KB/s");
                 }
                 else if (_req.IsTimedOut)
                 {

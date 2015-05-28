@@ -126,6 +126,7 @@ namespace CoAP_Analyzer_GUI.UserControls
             int index = workerlist.Items.IndexOf(item);
             WorkerModel _wm = (WorkerModel)workerlist.Items[index];
             WorkerListModel _wlm = (WorkerListModel)DataContext;
+            _wm.Worker.Stop();
             _wlm.Workers.Remove(_wm);
         }
 

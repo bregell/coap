@@ -123,7 +123,7 @@ namespace CoAP_Analyzer_Client
         }
 
         //TODO Change to value 
-        [DataMember(Name="Value")]
+        [DataMember(Name="value")]
         public double Value
         {
             get
